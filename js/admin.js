@@ -1218,10 +1218,13 @@
      ========================================================================== */
   window.quickToggleVisibility = async function (filename) {
     try {
+      // Find publicId for Cloudinary photos
+      const photo = photos.find(p => p.filename === filename);
+      const publicId = photo ? photo.publicId : null;
       const res = await fetch('/api/admin/toggle-visibility', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename })
+        body: JSON.stringify({ filename, publicId })
       });
       const data = await res.json();
       if (data.success) {
@@ -1238,10 +1241,13 @@
   window.quickDeletePhoto = async function (filename) {
     if (!confirm(`Are you sure you want to permanently delete "${filename}"?`)) return;
     try {
+      // Find publicId for Cloudinary photos
+      const photo = photos.find(p => p.filename === filename);
+      const publicId = photo ? photo.publicId : null;
       const res = await fetch('/api/admin/delete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename })
+        body: JSON.stringify({ filename, publicId, id: photo ? photo.id : null })
       });
       const data = await res.json();
       if (data.success) {
@@ -1408,7 +1414,7 @@
       }
     }
 
-    // Submit
+    // Submit — Cloudinary Direct Upload (works on Vercel + locally)
     if (submitBtn) {
       submitBtn.addEventListener('click', async () => {
         if (!selectedFile) {
@@ -1422,50 +1428,76 @@
 
         submitBtn.disabled = true;
         if (progressBox) progressBox.classList.remove('hidden');
-        if (progressBar) progressBar.style.width = '40%';
-        if (progressPercent) progressPercent.textContent = '40%';
+        if (progressBar) progressBar.style.width = '15%';
+        if (progressPercent) progressPercent.textContent = '15%';
 
-        const reader = new FileReader();
-        reader.onload = async () => {
-          const base64Data = reader.result;
+        try {
+          // Step 1: Upload directly to Cloudinary from browser
+          const CLOUD_NAME = 'yntfxqw0';
+          const UPLOAD_PRESET = 'lifecycle_unsigned';
+
+          const formData = new FormData();
+          formData.append('file', selectedFile);
+          formData.append('upload_preset', UPLOAD_PRESET);
+          formData.append('folder', 'lifecycle');
+
+          if (progressBar) progressBar.style.width = '30%';
+          if (progressPercent) progressPercent.textContent = '30%';
+
+          const cloudRes = await fetch(
+            `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+            { method: 'POST', body: formData }
+          );
+
+          if (!cloudRes.ok) {
+            const errData = await cloudRes.json();
+            throw new Error(errData.error?.message || 'Cloudinary upload failed');
+          }
+
+          const cloudData = await cloudRes.json();
+
           if (progressBar) progressBar.style.width = '70%';
           if (progressPercent) progressPercent.textContent = '70%';
 
-          try {
-            const res = await fetch('/api/admin/upload', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                filename: selectedFile.name,
-                data: base64Data,
-                title,
-                category,
-                visibility
-              })
-            });
+          // Step 2: Save metadata via our API (sets context tags on Cloudinary resource)
+          const metaRes = await fetch('/api/admin/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              publicId: cloudData.public_id,
+              url: cloudData.secure_url,
+              filename: cloudData.original_filename || selectedFile.name,
+              title,
+              category,
+              visibility,
+              sizeBytes: cloudData.bytes || selectedFile.size
+            })
+          });
 
-            const data = await res.json();
-            if (progressBar) progressBar.style.width = '100%';
-            if (progressPercent) progressPercent.textContent = '100%';
+          const data = await metaRes.json();
 
-            if (data.success) {
-              showToast('Photo successfully uploaded to archive!', 'success');
-              setTimeout(() => {
-                hideModal();
-                submitBtn.disabled = false;
-                loadPhotos();
-              }, 400);
-            } else {
-              showToast(data.error || 'Upload failed', 'error');
+          if (progressBar) progressBar.style.width = '100%';
+          if (progressPercent) progressPercent.textContent = '100%';
+
+          if (data.success) {
+            showToast('Photo uploaded to Cloudinary archive! ☁️', 'success');
+            setTimeout(() => {
+              hideModal();
               submitBtn.disabled = false;
-            }
-          } catch (err) {
-            showToast('Network error while uploading photo', 'error');
+              if (progressBox) progressBox.classList.add('hidden');
+              if (progressBar) progressBar.style.width = '0%';
+              loadPhotos();
+            }, 500);
+          } else {
+            showToast(data.error || 'Metadata save failed', 'error');
             submitBtn.disabled = false;
           }
-        };
-
-        reader.readAsDataURL(selectedFile);
+        } catch (err) {
+          console.error('Upload error:', err);
+          showToast('Upload error: ' + (err.message || 'Unknown error'), 'error');
+          submitBtn.disabled = false;
+          if (progressBox) progressBox.classList.add('hidden');
+        }
       });
     }
   }
