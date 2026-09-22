@@ -1,0 +1,32 @@
+[
+  {
+    "id": "deal_1720000002",
+    "name": "Maya & Rohan Patel",
+    "phone": "+1 (587) 700-3391",
+    "email": "rohan.patel@patelventures.ca",
+    "eventType": "Pre-Wedding & Sangeet",
+    "date": "2025-09-05",
+    "venue": "Lake Louise Chateau, Banff",
+    "package": "Master Curatorial ($4,500)",
+    "quoteAmount": 4500,
+    "status": "Advance Paid",
+    "notes": "Advance deposit of $2,000 received. Scheduled gear check and location recce on Sept 1st.",
+    "createdAt": "2025-04-14T14:15:00.000Z",
+    "source": "Direct WhatsApp Dealing"
+  },
+  {
+    "id": "deal_1720000003",
+    "name": "Jessica & Liam Zhang",
+    "phone": "+1 (403) 441-8902",
+    "email": "jess.zhang@creativeco.com",
+    "eventType": "Destination Elopement",
+    "date": "2025-10-12",
+    "venue": "Moraine Lake Rockpile, AB",
+    "package": "Essential Moments ($3,200)",
+    "quoteAmount": 3200,
+    "status": "New Inquiry",
+    "notes": "Requested sunrise slot with 35mm film aesthetic. Awaiting phone consultation.",
+    "createdAt": "2025-04-15T08:45:00.000Z",
+    "source": "Website Booking Form"
+  }
+]

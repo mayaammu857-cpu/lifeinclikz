@@ -1,0 +1,62 @@
+[
+  {
+    "id": "usr-01",
+    "name": "Ranjith K",
+    "email": "ranjith@lifeinclicks.ca",
+    "role": "Administrator",
+    "status": "Active",
+    "assignedEvents": 24,
+    "lastActive": "Just now",
+    "avatar": "images/hero-couple.jpg"
+  },
+  {
+    "id": "usr-02",
+    "name": "John Carter",
+    "email": "john.carter@lifeinclicks.ca",
+    "role": "Lead Photographer",
+    "status": "Active",
+    "assignedEvents": 12,
+    "lastActive": "2 hours ago",
+    "avatar": "images/6145573222888444980_121.jpg"
+  },
+  {
+    "id": "usr-03",
+    "name": "Sarah Wilson",
+    "email": "sarah.w@lifeinclicks.ca",
+    "role": "Event Photographer",
+    "status": "Active",
+    "assignedEvents": 8,
+    "lastActive": "5 hours ago",
+    "avatar": "images/6145573222888444988_121.jpg"
+  },
+  {
+    "id": "usr-04",
+    "name": "Mike Davis",
+    "email": "mike.davis@lifeinclicks.ca",
+    "role": "Wedding Specialist",
+    "status": "Active",
+    "assignedEvents": 15,
+    "lastActive": "1 day ago",
+    "avatar": "images/hero-couple.jpg"
+  },
+  {
+    "id": "usr-05",
+    "name": "Lisa Brown",
+    "email": "lisa.brown@lifeinclicks.ca",
+    "role": "Corporate Photographer",
+    "status": "Active",
+    "assignedEvents": 6,
+    "lastActive": "2 days ago",
+    "avatar": "images/6145573222888444990_121.jpg"
+  },
+  {
+    "id": "usr-06",
+    "name": "Emily & James",
+    "email": "emily.james@vipclient.com",
+    "role": "Client / VIP",
+    "status": "Active",
+    "assignedEvents": 1,
+    "lastActive": "3 days ago",
+    "avatar": "images/mountain-couple.jpg"
+  }
+]

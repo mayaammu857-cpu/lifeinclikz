@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head><title>Color & Metadata Extractor</title></head>
+<body>
+<canvas id="canvas" style="display:none;"></canvas>
+<pre id="output">Processing...</pre>
+<script>
+async function processImages() {
+  const resp = await fetch('/data/new_plates_manifest.json');
+  const plates = await resp.json();
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+  const enriched = [];
+
+  for (let i = 0; i < plates.length; i++) {
+    const p = plates[i];
+    try {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = () => reject(new Error('Failed to load: ' + p.src));
+        img.src = '/' + p.src;
+      });
+
+      // Downsample to 64x64 for fast color analysis
+      canvas.width = 64;
+      canvas.height = 64;
+      ctx.drawImage(img, 0, 0, 64, 64);
+      const imgData = ctx.getImageData(0, 0, 64, 64).data;
+
+      // Color bucket quantizer
+      const buckets = {};
+      for (let j = 0; j < imgData.length; j += 16) { // step by 4 pixels (16 bytes)
+        const r = Math.round(imgData[j] / 24) * 24;
+        const g = Math.round(imgData[j + 1] / 24) * 24;
+        const b = Math.round(imgData[j + 2] / 24) * 24;
+        const hex = '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        buckets[hex] = (buckets[hex] || 0) + 1;
+      }
+
+      const sorted = Object.entries(buckets).sort((a, b) => b[1] - a[1]);
+      const dominant = sorted[0] ? sorted[0][0] : '#1a1c1e';
+      const secondary = sorted[1] ? sorted[1][0] : '#555555';
+      const accent = sorted[2] ? sorted[2][0] : '#d8dede';
+      const palette = sorted.slice(0, 4).map(s => s[0]);
+
+      while (palette.length < 4) palette.push('#333333');
+
+      p.dominantColor = dominant;
+      p.secondaryColor = secondary;
+      p.accentColor = accent;
+      p.palette = palette;
+      enriched.push(p);
+    } catch (e) {
+      console.error(e);
+      p.dominantColor = '#222222';
+      p.secondaryColor = '#666666';
+      p.accentColor = '#cccccc';
+      p.palette = ['#111111', '#222222', '#666666', '#cccccc'];
+      enriched.push(p);
+    }
+  }
+
+  window.ENRICHED_DATA = enriched;
+  document.getElementById('output').textContent = JSON.stringify(enriched, null, 2);
+  console.log('DONE', enriched.length);
+}
+
+processImages();
+</script>
+</body>
+</html>

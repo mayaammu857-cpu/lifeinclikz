@@ -3,35 +3,58 @@
    Art Direction + Editorial Design + Interactive Installation
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Syne:wght@400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@300;400;500&display=swap');
 
 :root {
-  /* Color Palette - Obsidian Noir & Monochromatic Foundations */
-  --bg-deep: #070709;
-  --bg-canvas: #0b0c0f;
-  --bg-surface: rgba(18, 20, 24, 0.72);
-  --bg-surface-elevated: rgba(28, 32, 38, 0.88);
-  --bg-glass: rgba(14, 16, 20, 0.65);
-  --bg-glass-card: rgba(22, 25, 30, 0.45);
-  --bg-glass-active: rgba(255, 255, 255, 0.08);
+  /* ==========================================================================
+     EDITORIAL LUXURY COLOR PALETTE
+     ========================================================================== */
+  --color-main-bg: #F5F1E8;           /* Warm Ivory */
+  --color-heading: #171614;           /* Deep Charcoal */
+  --color-body-text: #5F5A52;         /* Soft Charcoal */
+  --color-accent: #B39A6B;            /* Muted Gold */
+  --color-secondary-bg: #E8E0D3;      /* Warm Beige */
+  --color-dark-section: #11100F;      /* Rich Black */
+  --color-text-on-dark: #F5F1E8;      /* Ivory */
+
+  /* Semantic Color Tokens */
+  --bg-main: var(--color-main-bg);
+  --bg-canvas: var(--color-main-bg);
+  --bg-secondary: var(--color-secondary-bg);
+  --bg-dark: var(--color-dark-section);
+  --bg-deep: var(--color-dark-section);
+  --bg-surface: rgba(232, 224, 211, 0.75);
+  --bg-surface-elevated: #F5F1E8;
+  --bg-glass: rgba(245, 241, 232, 0.88);
+  --bg-glass-card: rgba(232, 224, 211, 0.65);
+  --bg-glass-active: rgba(179, 154, 107, 0.18);
 
   /* Borders & Dividers */
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-prominent: rgba(255, 255, 255, 0.16);
-  --border-glow: rgba(255, 255, 255, 0.24);
+  --border-subtle: rgba(23, 22, 20, 0.12);
+  --border-prominent: rgba(23, 22, 20, 0.22);
+  --border-glow: rgba(179, 154, 107, 0.4);
+  --border-dark: rgba(245, 241, 232, 0.15);
 
   /* Typography */
-  --font-display: 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-serif: 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Bodoni Moda', Georgia, serif;
+  --font-heading: 'Bodoni Moda', Georgia, serif;
+  --font-serif: 'Bodoni Moda', Georgia, serif;
+  --font-bodoni: 'Bodoni Moda', Georgia, serif;
+  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-ui: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-dmsans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', 'Courier New', monospace;
 
   /* Text Colors */
-  --text-primary: #fcfcfc;
-  --text-secondary: #a6abb4;
-  --text-muted: #6b7280;
-  --text-tertiary: #4b5260;
-  --text-accent: #e5c17b;
+  --text-primary: var(--color-heading);
+  --text-heading: var(--color-heading);
+  --text-body: var(--color-body-text);
+  --text-secondary: var(--color-body-text);
+  --text-muted: #8A847A;
+  --text-tertiary: #A6A096;
+  --text-accent: var(--color-accent);
+  --text-on-dark: var(--color-text-on-dark);
 
   /* Dynamic Ambient Aura (mutated dynamically via JS) */
   --aura-color-1: rgba(0, 150, 180, 0.22);
@@ -94,12 +117,12 @@
 
 html {
   font-size: 16px;
-  color-scheme: dark;
+  color-scheme: light;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  background-color: var(--bg-deep);
-  color: var(--text-primary);
+  background-color: var(--bg-main);
+  color: var(--text-body);
   height: 100%;
   overflow-x: hidden;
 }
@@ -109,8 +132,8 @@ body {
   font-size: 0.95rem;
   line-height: 1.6;
   min-height: 100%;
-  background-color: var(--bg-deep);
-  color: var(--text-primary);
+  background-color: var(--bg-main);
+  color: var(--text-body);
   overflow-x: hidden;
   position: relative;
   user-select: none;

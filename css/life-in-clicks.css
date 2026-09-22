@@ -1,0 +1,686 @@
+/* ==========================================================================
+   LIFE IN CLICKS — Luxury Editorial Wedding Photography
+   Core Design System & Interactive Styling
+   ========================================================================== */
+
+:root {
+  /* ==========================================================================
+     EDITORIAL LUXURY COLOR PALETTE
+     ========================================================================== */
+  --color-main-bg: #F5F1E8;           /* Warm Ivory */
+  --color-warm-ivory: #F5F1E8;        /* Main background & text on dark */
+  --color-heading: #171614;           /* Deep Charcoal */
+  --color-deep-charcoal: #171614;     /* Deep Charcoal */
+  --color-charcoal: #171614;          /* Deep Charcoal */
+  --color-body-text: #5F5A52;         /* Soft Charcoal */
+  --color-soft-charcoal: #5F5A52;     /* Soft Charcoal */
+  --color-body: #5F5A52;              /* Soft Charcoal */
+  --color-accent: #B39A6B;            /* Muted Gold */
+  --color-muted-gold: #B39A6B;        /* Muted Gold */
+  --color-amber-gold: #B39A6B;        /* Muted Gold */
+  --color-amber-light: #CDB992;
+  --color-amber-deep: #967E51;
+  --color-gold-light: #CDB992;
+  --color-secondary-bg: #E8E0D3;      /* Warm Beige */
+  --color-warm-beige: #E8E0D3;        /* Warm Beige */
+  --color-dark-section: #11100F;      /* Rich Black */
+  --color-rich-black: #11100F;        /* Rich Black */
+  --color-deep-black: #11100F;        /* Rich Black */
+  --color-text-on-dark: #F5F1E8;      /* Ivory */
+
+  --color-soft-white: #FFFFFF;
+  --color-border-subtle: rgba(23, 22, 20, 0.12);
+  --color-border-dark: rgba(245, 241, 232, 0.15);
+  --color-overlay-dark: rgba(17, 16, 15, 0.7);
+
+  --font-serif: 'Bodoni Moda', Georgia, serif;
+  --font-heading: 'Bodoni Moda', Georgia, serif;
+  --font-display: 'Bodoni Moda', Georgia, serif;
+  --font-bodoni: 'Bodoni Moda', Georgia, serif;
+  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-ui: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-dmsans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Lenis Momentum Smooth Scroll System */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Base resets & typography */
+html {
+  background-color: var(--color-main-bg);
+  color: var(--color-body);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-main-bg);
+  color: var(--color-body);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--color-heading);
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: var(--color-dark-section);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-main-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: #C4BCB0;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* Typography Helpers */
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+/* Subtle Film Grain Overlay — Disabled for Ultra-Smooth 60-120 FPS Scrolling */
+.film-grain {
+  display: none;
+}
+
+/* Custom Camera Focus Cursor */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(179, 154, 107, 0.75);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: width 0.25s var(--ease-cinematic), height 0.25s var(--ease-cinematic), border-color 0.25s, background-color 0.25s;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-cursor-dot {
+  width: 4px;
+  height: 4px;
+  background-color: var(--color-accent);
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+/* Focus bracket crosshairs inside cursor */
+.custom-cursor::before,
+.custom-cursor::after {
+  content: '';
+  position: absolute;
+  background: rgba(179, 154, 107, 0.45);
+}
+.custom-cursor::before {
+  width: 8px;
+  height: 1px;
+}
+.custom-cursor::after {
+  width: 1px;
+  height: 8px;
+}
+
+.cursor-hover {
+  width: 60px;
+  height: 60px;
+  border-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(179, 154, 107, 0.15);
+}
+.cursor-hover .custom-cursor-dot {
+  transform: scale(1.5);
+  background-color: var(--color-warm-ivory);
+}
+
+.cursor-click {
+  transform: translate(-50%, -50%) scale(0.85);
+  border-color: var(--color-accent);
+}
+
+@media (pointer: coarse) {
+  .custom-cursor {
+    display: none !important;
+  }
+}
+
+/* Navigation Links Hover Underline */
+.nav-link {
+  position: relative;
+  letter-spacing: 0.16em;
+  transition: color 0.3s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0%;
+  height: 1px;
+  background-color: var(--color-muted-gold);
+  transition: width 0.35s var(--ease-cinematic);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Magnetic Buttons */
+.btn-magnetic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.3s, background-color 0.3s, color 0.3s;
+}
+
+/* Camera Object & Optical Reflections */
+.camera-stage-wrapper {
+  perspective: 1400px;
+  transform-style: preserve-3d;
+}
+
+.camera-body-container {
+  transform-origin: center center;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 25px 45px rgba(0, 0, 0, 0.85));
+}
+
+.lens-optical-element {
+  position: absolute;
+  top: 57.2%;
+  left: 55.4%;
+  transform: translate(-50%, -50%);
+  width: 44%;
+  height: 44%;
+  border-radius: 50%;
+  pointer-events: none;
+  overflow: hidden;
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.9);
+}
+
+/* Aperture blades iris */
+.aperture-iris-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+  transition: transform 0.15s ease-out;
+}
+
+/* Antireflective glass sheen */
+.lens-glass-reflection {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(205, 185, 146, 0.35) 0%, rgba(179, 154, 107, 0.18) 40%, rgba(150, 126, 81, 0.25) 70%, transparent 85%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* Optical shutter flash */
+.shutter-flash-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.95) 0%, rgba(247, 245, 240, 0.6) 50%, rgba(8, 8, 8, 0) 100%);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* Camera Telemetry & Viewfinder HUD */
+.viewfinder-hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 1px solid rgba(179, 154, 107, 0.3);
+  border-radius: 12px;
+  font-family: var(--font-sans);
+}
+
+.af-bracket {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: rgba(255, 255, 255, 0.6);
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.af-locked .af-bracket {
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 10px rgba(179, 154, 107, 0.6);
+}
+
+/* Floating Archival Printed Photographs */
+.archival-print {
+  background-color: #FFFFFF;
+  padding: 12px 12px 28px 12px;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  will-change: transform, opacity;
+  transform-origin: center center;
+  transition: box-shadow 0.4s var(--ease-cinematic);
+}
+
+.archival-print:hover {
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(179, 154, 107, 0.5);
+}
+
+.archival-print img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.archival-caption {
+  font-family: var(--font-serif);
+  color: var(--color-heading);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+  background: rgba(17, 16, 15, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(245, 241, 232, 0.12);
+}
+
+.glass-nav-mobile {
+  background: rgba(17, 16, 15, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-left: 1px solid rgba(179, 154, 107, 0.25);
+}
+
+/* Editorial Chapter Cards */
+.story-chapter-card {
+  transition: transform 0.6s var(--ease-cinematic), opacity 0.6s ease;
+}
+
+.story-img-container {
+  overflow: hidden;
+  position: relative;
+}
+
+.story-img-container img {
+  transition: transform 1.2s var(--ease-cinematic);
+}
+
+.story-img-container:hover img {
+  transform: scale(1.04);
+}
+
+/* Scroll Progress Line */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--color-muted-gold), var(--color-gold-light));
+  z-index: 1000;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Kinetic Stream & Filmstrip Marquee (81 Plates in Continuous Motion)
+   ========================================================================== */
+.kinetic-stream-wrapper {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  padding: 40px 0;
+  mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%);
+}
+
+.filmstrip-row {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  will-change: transform;
+  padding: 12px 0;
+}
+
+.filmstrip-card {
+  flex: 0 0 280px;
+  background-color: #FFFFFF;
+  padding: 10px 10px 22px 10px;
+  box-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.75);
+  transition: transform 0.4s var(--ease-cinematic), box-shadow 0.4s ease;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .filmstrip-card {
+    flex: 0 0 320px;
+  }
+}
+
+.filmstrip-card:hover {
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: 0 25px 50px -10px rgba(179, 154, 107, 0.35);
+  z-index: 20;
+}
+
+.filmstrip-card img {
+  width: 100%;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  display: block;
+}
+
+.filmstrip-meta {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-serif);
+  color: var(--color-heading);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Complete 81-Plate Curatorial Exhibition Grid
+   ========================================================================== */
+.archive-plate-card {
+  background: #FFFFFF;
+  padding: 12px 12px 24px 12px;
+  box-shadow: 0 15px 35px -10px rgba(23, 22, 20, 0.2), 0 0 0 1px rgba(23, 22, 20, 0.06);
+  transition: box-shadow 0.4s ease, border-color 0.4s ease, transform 0.4s var(--ease-cinematic);
+  will-change: transform, opacity;
+  position: relative;
+  cursor: pointer;
+  border: 1px solid rgba(23, 22, 20, 0.08);
+  content-visibility: auto;
+  contain-intrinsic-size: 280px 420px;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.archive-plate-card:hover {
+  transform: translateY(-6px) translateZ(0);
+  box-shadow: 0 25px 50px -15px rgba(179, 154, 107, 0.4), 0 0 20px rgba(179, 154, 107, 0.15);
+  border-color: rgba(179, 154, 107, 0.6);
+}
+
+/* Plate Image Wrapper */
+.plate-img-wrapper {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 3/4;
+  background-color: #121212;
+  border-radius: 1px;
+}
+
+.plate-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translateZ(0);
+  will-change: transform;
+  transition: transform 0.6s var(--ease-cinematic);
+}
+
+.archive-plate-card:hover .plate-img-wrapper img {
+  transform: scale(1.04) translateZ(0);
+}
+
+.archive-plate-meta {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--font-serif);
+  color: var(--color-heading);
+}
+
+/* 4 Alternating Hardware-Accelerated 3D Entrance Styles on Scroll (Ultra-Smooth) */
+.anim-tilt-left {
+  transform: translate3d(0, 26px, 0) rotate(-1.5deg) scale(0.97);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.anim-scale-up {
+  transform: translate3d(0, 30px, 0) scale(0.95);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.anim-tilt-right {
+  transform: translate3d(0, 26px, 0) rotate(1.5deg) scale(0.97);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.anim-perspective {
+  transform: translate3d(0, 26px, 0) scale(0.96);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* Story Chapter Curatorial Image Curtain & Parallax */
+.story-img-container {
+  position: relative;
+  overflow: hidden;
+  will-change: transform, clip-path;
+  border: 1px solid rgba(247, 245, 240, 0.12);
+  box-shadow: 0 35px 80px -20px rgba(0, 0, 0, 0.95);
+  background-color: #0c0c0c;
+  aspect-ratio: 4/5;
+  max-height: 80vh;
+}
+
+.story-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transform-origin: top center;
+  will-change: transform;
+  transition: filter 0.7s ease;
+}
+
+.story-img-container:hover .story-img {
+  filter: contrast(1.05) brightness(1.03);
+}
+
+/* Filter buttons */
+.filter-tab-btn {
+  transition: all 0.3s ease;
+}
+.filter-tab-btn.active {
+  background-color: var(--color-muted-gold);
+  color: var(--color-deep-black);
+  border-color: var(--color-muted-gold);
+  font-weight: 600;
+}
+
+/* Lightbox Modal */
+.lightbox-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(8, 8, 8, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.lightbox-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ==========================================================================
+   Hero Crossfade Slideshow & Optical "Bling" Shutter Flash Transitions
+   ========================================================================== */
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), visibility 1.2s;
+  will-change: opacity, transform;
+}
+
+.hero-slide.active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 2;
+}
+
+.hero-slide-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  transform: scale(1.05);
+  transition: transform 8s cubic-bezier(0.1, 0.8, 0.2, 1);
+}
+
+.hero-slide.active .hero-slide-img {
+  transform: scale(1);
+}
+
+/* Optical Bling Shutter Flash */
+.hero-bling-flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.95) 0%, rgba(250, 220, 140, 0.65) 40%, rgba(212, 146, 38, 0) 80%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 12;
+}
+
+.hero-bling-flash.bling-active {
+  animation: heroBlingAnimation 0.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+@keyframes heroBlingAnimation {
+  0% {
+    opacity: 0.95;
+    transform: scale(1.03);
+    filter: brightness(1.6);
+  }
+  30% {
+    opacity: 0.7;
+    filter: brightness(1.3);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+/* ==========================================================================
+   Scrolled Header Adaptive Theme (Warm Ivory Frosted Glass)
+   ========================================================================== */
+#site-header.is-scrolled {
+  background: rgba(245, 241, 232, 0.95) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(23, 22, 20, 0.1);
+  box-shadow: 0 4px 25px rgba(23, 22, 20, 0.05);
+}
+
+#site-header.is-scrolled .header-brand-text {
+  color: var(--color-heading) !important;
+}
+
+#site-header.is-scrolled .nav-link {
+  color: var(--color-body) !important;
+}
+
+#site-header.is-scrolled .nav-link:hover {
+  color: var(--color-accent) !important;
+}
+
+#site-header.is-scrolled .header-action-icon {
+  color: var(--color-heading) !important;
+}
+
+#site-header.is-scrolled .header-inquire-btn {
+  border-color: rgba(23, 22, 20, 0.25) !important;
+  color: var(--color-heading) !important;
+}
+
+#site-header.is-scrolled .header-inquire-btn:hover {
+  border-color: var(--color-accent) !important;
+  color: var(--color-accent) !important;
+  background-color: rgba(179, 154, 107, 0.1) !important;
+}
+
+#site-header.is-scrolled #nav-hamburger-btn {
+  color: var(--color-heading) !important;
+}
+
+
+

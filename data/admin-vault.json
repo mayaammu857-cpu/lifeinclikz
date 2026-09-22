@@ -1,0 +1,22 @@
+[
+  {
+    "id": "vault-sample-01",
+    "filename": "DSC03521.JPG",
+    "src": "images/DSC03521.JPG",
+    "title": "Glacial Ridge Solitude",
+    "category": "Alpinism",
+    "visibility": "public",
+    "uploadDate": "2026-09-18T10:00:00Z",
+    "notes": "Kept in private vault — not shown on public website."
+  },
+  {
+    "id": "vault-sample-02",
+    "filename": "DSC03647.JPG",
+    "src": "images/DSC03647.JPG",
+    "title": "Summit Horizon Glow",
+    "category": "Landscape",
+    "visibility": "private",
+    "uploadDate": "2026-09-18T10:05:00Z",
+    "notes": "Kept in private vault — not shown on public website."
+  }
+]

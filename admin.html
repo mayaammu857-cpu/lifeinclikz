@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lifeinclicks.ca — Executive Admin Panel</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandNavy: '#0d1527',
+            brandBlue: '#2563eb',
+            brandBlueLight: '#eff6ff',
+            brandPurple: '#8b5cf6',
+            brandEmerald: '#10b981',
+            brandOrange: '#f97316'
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Inter"', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Admin Custom Styles -->
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="bg-[#f8fafc] text-[#0f172a] font-sans antialiased min-h-screen flex overflow-x-hidden">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-40 hidden transition-opacity duration-300"></div>
+
+  <!-- =========================================================================
+       1. LEFT SIDEBAR (Dark Navy, Mobile Drawer + Desktop Sticky)
+       ========================================================================= -->
+  <aside id="admin-sidebar" class="w-72 md:w-64 bg-[#0d1527] text-white flex flex-col flex-shrink-0 min-h-screen border-r border-white/5 z-50 fixed md:sticky top-0 h-screen sidebar-scroll overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none">
+    
+    <!-- Brand Header -->
+    <div class="px-5 py-5 border-b border-white/5 flex items-center justify-between cursor-pointer" id="sidebar-brand">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg border border-white/30 flex items-center justify-center flex-shrink-0 bg-white/5 shadow-inner">
+          <i data-lucide="camera" class="w-5 h-5 text-white stroke-[1.75]"></i>
+        </div>
+        <div>
+          <h1 class="text-base font-bold tracking-tight text-white leading-none">lifeinclicks<span class="text-[#38bdf8]">.ca</span></h1>
+          <p class="text-[11px] text-slate-400 font-medium mt-1 uppercase tracking-wider">Admin Panel</p>
+        </div>
+      </div>
+      <!-- Mobile Close Sidebar Button -->
+      <button id="btn-close-sidebar" class="md:hidden w-8 h-8 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white flex items-center justify-center transition-colors">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Navigation Menu with Real View Switching -->
+    <nav class="flex-1 px-4 py-5 space-y-1.5" id="sidebar-nav">
+      <!-- 1. Dashboard -->
+      <a href="#dashboard" class="nav-link active" data-view="dashboard">
+        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+        <span>Dashboard</span>
+      </a>
+
+      <!-- 2. Customer Deals (CRM) -->
+      <a href="#deals" class="nav-link justify-between" data-view="deals">
+        <div class="flex items-center gap-3">
+          <i data-lucide="handshake" class="w-4 h-4 text-emerald-400"></i>
+          <span>Customer Dealing</span>
+        </div>
+        <span class="px-1.5 py-0.5 text-[10px] bg-emerald-500/20 text-emerald-300 rounded-md font-mono font-bold" id="sidebar-deals-badge">3 New</span>
+      </a>
+
+      <!-- 3. Events -->
+      <a href="#events" class="nav-link" data-view="events">
+        <i data-lucide="calendar" class="w-4 h-4"></i>
+        <span>Events</span>
+      </a>
+
+      <!-- 3. Photos (All Media Vault) -->
+      <a href="#photos" class="nav-link justify-between" data-view="photos">
+        <div class="flex items-center gap-3">
+          <i data-lucide="image" class="w-4 h-4"></i>
+          <span>Photos</span>
+        </div>
+        <span class="px-1.5 py-0.5 text-[10px] bg-blue-500/20 text-blue-300 rounded-md font-mono" id="sidebar-photos-badge">84</span>
+      </a>
+
+      <!-- 4. Galleries -->
+      <a href="#galleries" class="nav-link" data-view="galleries">
+        <i data-lucide="folder-kanban" class="w-4 h-4"></i>
+        <span>Galleries</span>
+      </a>
+
+      <!-- 5. Customers / Users -->
+      <a href="#users" class="nav-link" data-view="users">
+        <i data-lucide="users" class="w-4 h-4"></i>
+        <span>Customers / Users</span>
+      </a>
+
+      <!-- 6. Sponsors / Brands -->
+      <a href="#sponsors" class="nav-link" data-view="sponsors">
+        <i data-lucide="award" class="w-4 h-4"></i>
+        <span>Sponsors / Brands</span>
+      </a>
+
+      <!-- 7. Analytics -->
+      <a href="#analytics" class="nav-link" data-view="analytics">
+        <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+        <span>Analytics</span>
+      </a>
+
+      <!-- 8. Settings -->
+      <a href="#settings" class="nav-link justify-between" data-view="settings">
+        <div class="flex items-center gap-3">
+          <i data-lucide="settings" class="w-4 h-4"></i>
+          <span>Settings</span>
+        </div>
+        <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400"></i>
+      </a>
+    </nav>
+
+    <!-- Sidebar Bottom Card & Footer -->
+    <div class="p-4 border-t border-white/5 space-y-4">
+      
+      <!-- Brand Promotion Card -->
+      <div class="bg-[#121c33] border border-white/10 rounded-xl p-3 flex items-center gap-3 shadow-md">
+        <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-slate-800 border border-white/10">
+          <img src="images/mountain-couple.jpg" alt="Life in a Click" class="w-full h-full object-cover" onerror="this.src='images/hero-couple.jpg'">
+        </div>
+        <div class="overflow-hidden">
+          <h4 class="text-xs font-bold text-white leading-snug truncate">Life in a Click</h4>
+          <p class="text-[10px] text-slate-400 truncate mt-0.5">Capture · Share · Remember</p>
+        </div>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="text-[11px] text-slate-500 font-normal leading-relaxed px-1">
+        <p>© 2025 lifeinclicks.ca</p>
+        <p class="text-slate-600">Admin Panel v1.0 • OG Full Edition</p>
+      </div>
+
+    </div>
+
+  </aside>
+
+  <!-- =========================================================================
+       2. MAIN CONTENT WRAPPER
+       ========================================================================= -->
+  <div class="flex-1 flex flex-col min-w-0 min-h-screen">
+    
+    <!-- Top Header Navigation Bar -->
+    <header class="bg-white border-b border-slate-200/80 sticky top-0 z-20 px-4 sm:px-6 md:px-8 py-3 flex items-center justify-between shadow-xs">
+      
+      <div class="flex items-center gap-2.5 flex-1 max-w-md">
+        <!-- Mobile Hamburger Button -->
+        <button id="btn-mobile-sidebar-toggle" class="md:hidden p-2 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors flex-shrink-0" aria-label="Open Menu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+
+        <!-- Mobile Mini Brand -->
+        <div class="flex items-center gap-1.5 md:hidden">
+          <div class="w-7 h-7 rounded-md bg-[#0d1527] text-white flex items-center justify-center flex-shrink-0">
+            <i data-lucide="camera" class="w-3.5 h-3.5"></i>
+          </div>
+          <span class="font-bold text-xs text-slate-900 leading-none">lifeinclicks<span class="text-[#38bdf8]">.ca</span></span>
+        </div>
+
+        <!-- Search Input Bar (Hidden on phone, visible on tablet/desktop) -->
+        <div class="w-full relative hidden sm:block">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+          <input 
+            type="text" 
+            id="global-search-input" 
+            placeholder="Search events, photos, users, deals..." 
+            class="w-full pl-10 pr-4 py-2 bg-slate-50 hover:bg-slate-100/70 focus:bg-white border border-slate-200 rounded-lg text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all">
+        </div>
+      </div>
+
+      <!-- Right Action Items -->
+      <div class="flex items-center gap-5">
+        
+        <!-- Live Public Site Shortcut -->
+        <a href="index.html" target="_blank" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-blue-600 bg-slate-100/80 hover:bg-blue-50 px-3 py-1.5 rounded-lg border border-slate-200 transition-all">
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          <span>View Live Site</span>
+        </a>
+
+        <!-- Notification Bell Icon with Badge -->
+        <div class="relative">
+          <button id="btn-notifications" class="w-9 h-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-600 transition-colors relative">
+            <i data-lucide="bell" class="w-4 h-4"></i>
+            <span class="absolute top-1 right-1 w-4 h-4 bg-rose-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center shadow-xs">3</span>
+          </button>
+
+          <!-- Notifications Dropdown Popover -->
+          <div id="notifications-popover" class="hidden absolute right-0 mt-2 w-80 bg-white border border-slate-200 rounded-xl shadow-xl p-3 z-50 text-xs space-y-2">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <span class="font-bold text-slate-800">Notifications</span>
+              <span class="text-[11px] text-blue-600 cursor-pointer hover:underline" onclick="showToast('All notifications marked as read', 'success')">Mark all read</span>
+            </div>
+            <div class="space-y-2 max-h-60 overflow-y-auto">
+              <div class="p-2 bg-blue-50/50 rounded-lg border border-blue-100 flex items-start gap-2.5">
+                <i data-lucide="upload-cloud" class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0"></i>
+                <div>
+                  <p class="font-semibold text-slate-800">84 raw photos indexed</p>
+                  <p class="text-slate-500 text-[11px]">All plates ready in master archive</p>
+                  <span class="text-[10px] text-slate-400">Just now</span>
+                </div>
+              </div>
+              <div class="p-2 hover:bg-slate-50 rounded-lg flex items-start gap-2.5">
+                <i data-lucide="download" class="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0"></i>
+                <div>
+                  <p class="font-semibold text-slate-800">Milestone Reached</p>
+                  <p class="text-slate-500 text-[11px]">Spring Carnival crossed 1,000 downloads</p>
+                  <span class="text-[10px] text-slate-400">1h ago</span>
+                </div>
+              </div>
+              <div class="p-2 hover:bg-slate-50 rounded-lg flex items-start gap-2.5">
+                <i data-lucide="shield-check" class="w-4 h-4 text-slate-600 mt-0.5 flex-shrink-0"></i>
+                <div>
+                  <p class="font-semibold text-slate-800">Vault Sync Active</p>
+                  <p class="text-slate-500 text-[11px]">Public & Private exhibition states synced</p>
+                  <span class="text-[10px] text-slate-400">2h ago</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Profile Dropdown -->
+        <div class="relative">
+          <div id="btn-user-menu" class="flex items-center gap-3 pl-2 border-l border-slate-200 cursor-pointer select-none">
+            <div class="w-9 h-9 rounded-full overflow-hidden border border-slate-200 shadow-xs flex-shrink-0 bg-slate-100">
+              <img src="images/hero-couple.jpg" alt="Ranjith K" class="w-full h-full object-cover">
+            </div>
+            <div class="text-left hidden sm:block">
+              <p class="text-sm font-bold text-slate-800 leading-tight">Ranjith K</p>
+              <p class="text-[11px] text-slate-500 font-medium">Administrator</p>
+            </div>
+          </div>
+          <!-- User Dropdown -->
+          <div id="user-popover" class="hidden absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-xl p-2 z-50 text-xs space-y-1">
+            <a href="#settings" class="flex items-center gap-2 p-2 hover:bg-slate-50 rounded-lg text-slate-700" onclick="switchView('settings')">
+              <i data-lucide="settings" class="w-3.5 h-3.5 text-slate-400"></i> Settings
+            </a>
+            <a href="index.html" target="_blank" class="flex items-center gap-2 p-2 hover:bg-slate-50 rounded-lg text-slate-700">
+              <i data-lucide="external-link" class="w-3.5 h-3.5 text-slate-400"></i> Public Website
+            </a>
+            <div class="border-t border-slate-100 my-1"></div>
+            <button class="w-full flex items-center gap-2 p-2 hover:bg-rose-50 rounded-lg text-rose-600 text-left" onclick="showToast('Admin session secured', 'info')">
+              <i data-lucide="log-out" class="w-3.5 h-3.5 text-rose-500"></i> Lock Session
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Main Dynamic Content Body (Touch optimized) -->
+    <main class="p-3 sm:p-5 md:p-8 space-y-4 sm:space-y-6 flex-1 pb-24 md:pb-8 max-w-full overflow-x-hidden">
+      
+      <!-- =====================================================================
+           VIEW 1: DASHBOARD
+           ===================================================================== -->
+      <section id="view-dashboard" class="view-section active-view space-y-6">
+        
+        <!-- Dashboard Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold tracking-tight text-slate-900">Dashboard</h2>
+            <p class="text-sm text-slate-500 mt-0.5">Welcome back, <strong class="text-slate-700 font-semibold">Ranjith</strong>! Here's what's happening with your platform.</p>
+          </div>
+
+          <!-- Date Range Filter Button -->
+          <div class="relative">
+            <button id="btn-date-range" class="inline-flex items-center gap-2 px-3.5 py-2 bg-white border border-slate-200 rounded-lg shadow-2xs hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-all">
+              <i data-lucide="calendar" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span id="date-range-label">Apr 1, 2025 – Apr 30, 2025</span>
+              <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 ml-1"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Top Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          
+          <!-- Metric 1: Total Events -->
+          <div class="admin-card p-5 flex items-start justify-between cursor-pointer" onclick="switchView('events')">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl stat-icon-blue flex items-center justify-center flex-shrink-0">
+                <i data-lucide="calendar" class="w-6 h-6 stroke-[1.8]"></i>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-slate-500">Total Events</p>
+                <h3 class="text-2xl font-bold text-slate-900 mt-0.5 tracking-tight" id="metric-total-events">24</h3>
+                <p class="text-[11px] text-emerald-600 font-semibold mt-1 flex items-center gap-0.5">
+                  <i data-lucide="arrow-up" class="w-3 h-3"></i>
+                  <span>12%</span>
+                  <span class="text-slate-400 font-normal ml-1">vs. last month</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metric 2: Photos Uploaded -->
+          <div class="admin-card p-5 flex items-start justify-between cursor-pointer" onclick="switchView('photos')">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl stat-icon-purple flex items-center justify-center flex-shrink-0">
+                <i data-lucide="image" class="w-6 h-6 stroke-[1.8]"></i>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-slate-500">Photos Uploaded</p>
+                <h3 class="text-2xl font-bold text-slate-900 mt-0.5 tracking-tight" id="metric-photos-uploaded">84</h3>
+                <p class="text-[11px] text-emerald-600 font-semibold mt-1 flex items-center gap-0.5">
+                  <i data-lucide="arrow-up" class="w-3 h-3"></i>
+                  <span>28%</span>
+                  <span class="text-slate-400 font-normal ml-1">vs. last month</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metric 3: Active Galleries -->
+          <div class="admin-card p-5 flex items-start justify-between cursor-pointer" onclick="switchView('galleries')">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl stat-icon-green flex items-center justify-center flex-shrink-0">
+                <i data-lucide="folder-kanban" class="w-6 h-6 stroke-[1.8]"></i>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-slate-500">Active Galleries</p>
+                <h3 class="text-2xl font-bold text-slate-900 mt-0.5 tracking-tight" id="metric-active-galleries">7</h3>
+                <p class="text-[11px] text-emerald-600 font-semibold mt-1 flex items-center gap-0.5">
+                  <i data-lucide="arrow-up" class="w-3 h-3"></i>
+                  <span>11%</span>
+                  <span class="text-slate-400 font-normal ml-1">vs. last month</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metric 4: Total Downloads -->
+          <div class="admin-card p-5 flex items-start justify-between cursor-pointer" onclick="switchView('analytics')">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-xl stat-icon-orange flex items-center justify-center flex-shrink-0">
+                <i data-lucide="download" class="w-6 h-6 stroke-[1.8]"></i>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-slate-500">Total Downloads</p>
+                <h3 class="text-2xl font-bold text-slate-900 mt-0.5 tracking-tight" id="metric-total-downloads">5,236</h3>
+                <p class="text-[11px] text-emerald-600 font-semibold mt-1 flex items-center gap-0.5">
+                  <i data-lucide="arrow-up" class="w-3 h-3"></i>
+                  <span>34%</span>
+                  <span class="text-slate-400 font-normal ml-1">vs. last month</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Main Dashboard Grid -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+          
+          <!-- LEFT & MIDDLE COLUMNS (xl:col-span-8) -->
+          <div class="xl:col-span-8 space-y-6">
+            
+            <!-- Row 1: Overview Chart + Recent Events -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              
+              <!-- Overview Chart -->
+              <div class="lg:col-span-7 admin-card p-5 flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-sm font-bold text-slate-900">Photo & Download Overview</h3>
+                  <div class="flex items-center gap-4 text-xs font-medium">
+                    <span class="flex items-center gap-1.5 text-slate-600">
+                      <span class="w-2 h-2 rounded-full bg-blue-600"></span> Photos Uploaded
+                    </span>
+                    <span class="flex items-center gap-1.5 text-slate-600">
+                      <span class="w-2 h-2 rounded-full bg-purple-600"></span> Downloads
+                    </span>
+                  </div>
+                </div>
+
+                <div class="chart-container" id="overview-chart-wrapper">
+                  <svg viewBox="0 0 500 240" class="w-full h-full overflow-visible" id="overview-chart-svg">
+                    <defs>
+                      <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#2563eb" stop-opacity="0.25"/>
+                        <stop offset="100%" stop-color="#2563eb" stop-opacity="0.0"/>
+                      </linearGradient>
+                      <linearGradient id="purpleGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.22"/>
+                        <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.0"/>
+                      </linearGradient>
+                    </defs>
+
+                    <line x1="40" y1="30" x2="480" y2="30" class="chart-grid-line"/>
+                    <line x1="40" y1="75" x2="480" y2="75" class="chart-grid-line"/>
+                    <line x1="40" y1="120" x2="480" y2="120" class="chart-grid-line"/>
+                    <line x1="40" y1="165" x2="480" y2="165" class="chart-grid-line"/>
+                    <line x1="40" y1="210" x2="480" y2="210" class="chart-grid-line"/>
+
+                    <text x="32" y="34" text-anchor="end" class="chart-axis-text">2,000</text>
+                    <text x="32" y="79" text-anchor="end" class="chart-axis-text">1,500</text>
+                    <text x="32" y="124" text-anchor="end" class="chart-axis-text">1,000</text>
+                    <text x="32" y="169" text-anchor="end" class="chart-axis-text">500</text>
+                    <text x="32" y="214" text-anchor="end" class="chart-axis-text">0</text>
+
+                    <path d="M 50 155 Q 85 158, 120 145 T 190 148 T 260 125 T 330 115 T 400 102 T 475 75 L 475 210 L 50 210 Z" fill="url(#blueGrad)"/>
+                    <path d="M 50 155 Q 85 158, 120 145 T 190 148 T 260 125 T 330 115 T 400 102 T 475 75" class="chart-line-blue"/>
+
+                    <path d="M 50 185 Q 85 188, 120 178 T 190 168 T 260 170 T 330 155 T 400 150 T 475 125 L 475 210 L 50 210 Z" fill="url(#purpleGrad)"/>
+                    <path d="M 50 185 Q 85 188, 120 178 T 190 168 T 260 170 T 330 155 T 400 150 T 475 125" class="chart-line-purple"/>
+
+                    <circle cx="475" cy="75" r="4.5" fill="#2563eb" stroke="#ffffff" stroke-width="2"/>
+                    <circle cx="475" cy="125" r="4.5" fill="#8b5cf6" stroke="#ffffff" stroke-width="2"/>
+
+                    <text x="50" y="232" text-anchor="middle" class="chart-axis-text">Apr 1</text>
+                    <text x="156" y="232" text-anchor="middle" class="chart-axis-text">Apr 7</text>
+                    <text x="262" y="232" text-anchor="middle" class="chart-axis-text">Apr 14</text>
+                    <text x="368" y="232" text-anchor="middle" class="chart-axis-text">Apr 21</text>
+                    <text x="475" y="232" text-anchor="middle" class="chart-axis-text">Apr 28</text>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Recent Events Card -->
+              <div class="lg:col-span-5 admin-card p-5 flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="text-sm font-bold text-slate-900">Recent Events</h3>
+                  <button class="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1" onclick="switchView('events')">
+                    <span>View All</span>
+                    <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                  </button>
+                </div>
+
+                <!-- Dynamic Recent Events Container -->
+                <div class="space-y-3 flex-1" id="dashboard-recent-events">
+                  <!-- Populated dynamically via JS -->
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Row 2: Manage Events Table + Top Performing Galleries -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              
+              <!-- Manage Events Table Card -->
+              <div class="lg:col-span-8 admin-card p-5">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-sm font-bold text-slate-900">Manage Events</h3>
+                  <button class="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1" onclick="switchView('events')">
+                    <span>View All Events</span>
+                    <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                  </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                  <table class="admin-table text-left" id="events-management-table">
+                    <thead>
+                      <tr>
+                        <th>Event</th>
+                        <th>Date</th>
+                        <th>Photographer</th>
+                        <th>Status</th>
+                        <th>Photos</th>
+                        <th class="text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashboard-events-table-body">
+                      <!-- Populated dynamically via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Top Performing Galleries Card -->
+              <div class="lg:col-span-4 admin-card p-5 flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="text-sm font-bold text-slate-900">Top Performing Galleries</h3>
+                  <button class="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1" onclick="switchView('galleries')">
+                    <span>View All</span>
+                    <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                  </button>
+                </div>
+
+                <div class="space-y-3.5 flex-1" id="dashboard-top-galleries">
+                  <!-- Populated dynamically via JS -->
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- RIGHT ACTION COLUMN (xl:col-span-4) -->
+          <div class="xl:col-span-4 space-y-6">
+            
+            <!-- Quick Actions Card -->
+            <div class="admin-card p-5">
+              <h3 class="text-sm font-bold text-slate-900 mb-4">Quick Actions</h3>
+              <div class="space-y-2.5">
+                
+                <!-- 1. Upload Photos Button -->
+                <button id="btn-quick-upload" class="quick-action-btn group">
+                  <div class="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs">
+                    <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+                  </div>
+                  <span class="text-sm font-semibold text-slate-800 group-hover:text-blue-600 transition-colors">Upload Photos</span>
+                </button>
+
+                <!-- 2. Create Event Button -->
+                <button id="btn-quick-create-event" class="quick-action-btn group">
+                  <div class="w-9 h-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-xs">
+                    <i data-lucide="calendar-plus" class="w-4 h-4"></i>
+                  </div>
+                  <span class="text-sm font-semibold text-slate-800 group-hover:text-emerald-600 transition-colors">Create Event</span>
+                </button>
+
+                <!-- 3. Create Gallery Button -->
+                <button id="btn-quick-create-gallery" class="quick-action-btn group">
+                  <div class="w-9 h-9 rounded-lg bg-purple-600 text-white flex items-center justify-center shadow-xs">
+                    <i data-lucide="image-plus" class="w-4 h-4"></i>
+                  </div>
+                  <span class="text-sm font-semibold text-slate-800 group-hover:text-purple-600 transition-colors">Create Gallery</span>
+                </button>
+
+                <!-- 4. Add User Button -->
+                <button id="btn-quick-add-user" class="quick-action-btn group">
+                  <div class="w-9 h-9 rounded-lg bg-orange-500 text-white flex items-center justify-center shadow-xs">
+                    <i data-lucide="user-plus" class="w-4 h-4"></i>
+                  </div>
+                  <span class="text-sm font-semibold text-slate-800 group-hover:text-orange-600 transition-colors">Add User</span>
+                </button>
+
+              </div>
+            </div>
+
+            <!-- Recent Uploads Card (Dynamic from Server) -->
+            <div class="admin-card p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-bold text-slate-900">Recent Uploads</h3>
+                <button class="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1" onclick="switchView('photos')">
+                  <span>View All</span>
+                  <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                </button>
+              </div>
+
+              <!-- Dynamic Photos List Container -->
+              <div id="recent-uploads-container" class="space-y-3">
+                <!-- Populated via JS -->
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- =====================================================================
+           VIEW: CUSTOMER DEALS & INQUIRIES (CRM)
+           ===================================================================== -->
+      <section id="view-deals" class="view-section space-y-6">
+        
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 uppercase tracking-wider">Client CRM Engine</span>
+              <span class="text-xs text-slate-400">• Real-Time Pipeline</span>
+            </div>
+            <h2 class="text-2xl font-bold tracking-tight text-slate-900 mt-1">Customer Dealing & Lead Management</h2>
+            <p class="text-sm text-slate-500 mt-0.5">Manage event inquiries, direct WhatsApp chats, deal negotiation stages, and client quotations.</p>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <button class="px-4 py-2 text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg shadow-xs flex items-center gap-2" onclick="syncCustomerDeals()">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span>Refresh Deals</span>
+            </button>
+            <button class="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm flex items-center gap-2" onclick="openAddDealModal()">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              <span>Add New Lead</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Deal Pipeline Metric Cards (4 Cards) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Card 1: Total Leads -->
+          <div class="admin-card p-5 border-l-4 border-l-blue-500 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total Inquiries</span>
+              <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                <i data-lucide="inbox" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div class="mt-3">
+              <h3 class="text-2xl font-extrabold text-slate-900" id="metric-deals-total">0</h3>
+              <p class="text-[11px] text-slate-500 mt-0.5">All website & manual commissions</p>
+            </div>
+          </div>
+
+          <!-- Card 2: Active Discussions -->
+          <div class="admin-card p-5 border-l-4 border-l-amber-500 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">In Discussion</span>
+              <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                <i data-lucide="message-circle" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div class="mt-3">
+              <h3 class="text-2xl font-extrabold text-amber-600" id="metric-deals-discussion">0</h3>
+              <p class="text-[11px] text-slate-500 mt-0.5">Negotiation & dates ongoing</p>
+            </div>
+          </div>
+
+          <!-- Card 3: Confirmed Bookings -->
+          <div class="admin-card p-5 border-l-4 border-l-emerald-500 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Confirmed Booked</span>
+              <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <i data-lucide="check-check" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div class="mt-3">
+              <h3 class="text-2xl font-extrabold text-emerald-600" id="metric-deals-booked">0</h3>
+              <p class="text-[11px] text-slate-500 mt-0.5">Advance deposited / contracted</p>
+            </div>
+          </div>
+
+          <!-- Card 4: Pipeline Value -->
+          <div class="admin-card p-5 border-l-4 border-l-purple-500 flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Pipeline Value</span>
+              <div class="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+                <i data-lucide="badge-dollar-sign" class="w-4 h-4"></i>
+              </div>
+            </div>
+            <div class="mt-3">
+              <h3 class="text-2xl font-extrabold text-purple-700" id="metric-deals-value">$0</h3>
+              <p class="text-[11px] text-slate-500 mt-0.5">Total estimated commission value</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter & Search Controls -->
+        <div class="admin-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <!-- Status Filter Tabs -->
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0" id="deals-filter-tabs">
+            <button class="deals-filter-tab px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors bg-slate-900 text-white" data-status="all">All Deals</button>
+            <button class="deals-filter-tab px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors text-slate-600 hover:bg-slate-100" data-status="New Inquiry">New Inquiries</button>
+            <button class="deals-filter-tab px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors text-slate-600 hover:bg-slate-100" data-status="In Discussion">In Discussion</button>
+            <button class="deals-filter-tab px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors text-slate-600 hover:bg-slate-100" data-status="Advance Paid">Advance Paid</button>
+            <button class="deals-filter-tab px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors text-slate-600 hover:bg-slate-100" data-status="Completed">Completed</button>
+          </div>
+
+          <!-- Deal Search -->
+          <div class="w-full sm:w-64 relative">
+            <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+            <input type="text" id="deals-search-input" placeholder="Search client, venue, phone..." class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
+          </div>
+        </div>
+
+        <!-- Customer Inquiries Table -->
+        <div class="admin-card overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="admin-table text-left">
+              <thead>
+                <tr>
+                  <th>Client / Couple</th>
+                  <th>Event & Date</th>
+                  <th>Location / Venue</th>
+                  <th>Package & Quotation</th>
+                  <th>Deal Stage</th>
+                  <th>Direct Contact</th>
+                  <th class="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="deals-directory-tbody">
+                <!-- Dynamically populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- =====================================================================
+           VIEW 2: PHOTOS (Full Media Library & Vault)
+           ===================================================================== -->
+      <section id="view-photos" class="view-section space-y-6">
+        
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
+              <span>Photo Vault & Master Library</span>
+              <span class="text-xs px-2.5 py-1 rounded-full bg-blue-100 text-blue-700 font-mono font-bold" id="photos-view-badge">84 Photos</span>
+            </h2>
+            <p class="text-sm text-slate-500 mt-0.5">Manage, preview, and toggle visibility for all high-resolution photographic plates.</p>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button class="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm flex items-center gap-2" onclick="openUploadModal()">
+              <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+              <span>Upload New Photos</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Photos Toolbar & Filters -->
+        <div class="admin-card p-4 space-y-4">
+          
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            
+            <!-- Visibility Filter Tabs -->
+            <div class="flex flex-wrap items-center gap-2" id="photo-visibility-tabs">
+              <button class="filter-tab-pill active" data-vis="all">
+                <span>All Photos</span>
+                <span class="text-[11px] opacity-80" id="pill-count-all">(84)</span>
+              </button>
+              <button class="filter-tab-pill" data-vis="public">
+                <i data-lucide="globe" class="w-3.5 h-3.5 text-emerald-500"></i>
+                <span>Live on Website</span>
+                <span class="text-[11px] opacity-80" id="pill-count-public">(79)</span>
+              </button>
+              <button class="filter-tab-pill" data-vis="private">
+                <i data-lucide="lock" class="w-3.5 h-3.5 text-blue-500"></i>
+                <span>Private Vault</span>
+                <span class="text-[11px] opacity-80" id="pill-count-private">(5)</span>
+              </button>
+            </div>
+
+            <!-- Sort & Series Filter -->
+            <div class="flex items-center gap-3">
+              <select id="photo-series-filter" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                <option value="all">All Series / Categories</option>
+                <option value="Portraiture">Portraiture</option>
+                <option value="Alpinism">Alpinism</option>
+                <option value="Fauna">Fauna</option>
+                <option value="Botanica">Botanica</option>
+                <option value="Atmosphere">Atmosphere</option>
+                <option value="Ceremony">Ceremony</option>
+                <option value="Process">Process</option>
+                <option value="Private Vault">Private Vault</option>
+              </select>
+
+              <select id="photo-sort-select" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                <option value="newest">Newest Uploads</option>
+                <option value="oldest">Oldest First</option>
+                <option value="largest">Largest File Size</option>
+                <option value="name">Title (A-Z)</option>
+              </select>
+            </div>
+
+          </div>
+
+          <!-- Quick Search Bar inside photos -->
+          <div class="relative w-full">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+            <input type="text" id="photos-filter-search" placeholder="Search plates by title, filename, camera, or lens..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+          </div>
+
+        </div>
+
+        <!-- Master Photo Grid -->
+        <div id="master-photos-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+          <!-- Dynamically populated with all 84 photos -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="photos-empty-state" class="hidden text-center py-16 bg-white border border-slate-200 rounded-2xl p-6">
+          <div class="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-400">
+            <i data-lucide="image-off" class="w-6 h-6"></i>
+          </div>
+          <h4 class="text-sm font-bold text-slate-800">No photos match your filter</h4>
+          <p class="text-xs text-slate-500 mt-1">Try resetting the search keyword or selecting "All Photos".</p>
+          <button class="mt-4 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg text-xs font-bold hover:bg-blue-100" onclick="resetPhotoFilters()">Reset Filters</button>
+        </div>
+
+      </section>
+
+      <!-- =====================================================================
+           VIEW 3: EVENTS (Events Hub)
+           ===================================================================== -->
+      <section id="view-events" class="view-section space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold tracking-tight text-slate-900">Events Management</h2>
+            <p class="text-sm text-slate-500 mt-0.5">Track shoots, photographers, venue locations, and photo releases.</p>
+          </div>
+          <button class="px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm flex items-center gap-2" onclick="openCreateEventModal()">
+            <i data-lucide="calendar-plus" class="w-4 h-4"></i>
+            <span>Create New Event</span>
+          </button>
+        </div>
+
+        <!-- Events Cards Grid -->
+        <div id="events-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+      </section>
+
+      <!-- =====================================================================
+           VIEW 4: GALLERIES (Exhibition Series)
+           ===================================================================== -->
+      <section id="view-galleries" class="view-section space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold tracking-tight text-slate-900">Curated Exhibition Galleries</h2>
+            <p class="text-sm text-slate-500 mt-0.5">Master series and themed exhibitions displayed on the kinetic public website.</p>
+          </div>
+          <button class="px-4 py-2 text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 rounded-lg shadow-sm flex items-center gap-2" onclick="openCreateGalleryPrompt()">
+            <i data-lucide="folder-plus" class="w-4 h-4"></i>
+            <span>Create New Gallery</span>
+          </button>
+        </div>
+
+        <!-- Galleries Grid -->
+        <div id="galleries-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+      </section>
+
+      <!-- =====================================================================
+           VIEW 5: CUSTOMERS / USERS
+           ===================================================================== -->
+      <section id="view-users" class="view-section space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-2xl font-bold tracking-tight text-slate-900">Users & Photographers Directory</h2>
+            <p class="text-sm text-slate-500 mt-0.5">Team accounts, guest credentials, and client VIP vault access permissions.</p>
+          </div>
+          <button class="px-4 py-2 text-xs font-bold text-white bg-orange-500 hover:bg-orange-600 rounded-lg shadow-sm flex items-center gap-2" onclick="openAddUserModal()">
+            <i data-lucide="user-plus" class="w-4 h-4"></i>
+            <span>Add User</span>
+          </button>
+        </div>
+
+        <div class="admin-card overflow-hidden">
+          <table class="admin-table text-left">
+            <thead>
+              <tr>
+                <th>User / Member</th>
+                <th>Role</th>
+                <th>Email Address</th>
+                <th>Assigned Events</th>
+                <th>Status</th>
+                <th>Last Active</th>
+                <th class="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-directory-tbody">
+              <!-- Populated dynamically via JS -->
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
+      <!-- =====================================================================
+           VIEW 6: SPONSORS / BRANDS
+           ===================================================================== -->
+      <section id="view-sponsors" class="view-section space-y-6">
+        <div>
+          <h2 class="text-2xl font-bold tracking-tight text-slate-900">Sponsors & Brand Partnerships</h2>
+          <p class="text-sm text-slate-500 mt-0.5">Control sponsor integrations, branding ribbons, and collaborative campaigns.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="admin-card p-5 text-center space-y-3">
+            <div class="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto text-slate-800 font-bold text-lg">SONY</div>
+            <h4 class="font-bold text-sm text-slate-900">Sony Alpha Imaging</h4>
+            <p class="text-xs text-slate-500">Official camera & sensor sponsor for high-res plates.</p>
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-600">Active Tier 1</span>
+          </div>
+
+          <div class="admin-card p-5 text-center space-y-3">
+            <div class="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto text-slate-800 font-bold text-lg">PROFOTO</div>
+            <h4 class="font-bold text-sm text-slate-900">Profoto Lighting</h4>
+            <p class="text-xs text-slate-500">Studio strobe and location lighting partner.</p>
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-600">Active Tier 1</span>
+          </div>
+
+          <div class="admin-card p-5 text-center space-y-3">
+            <div class="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto text-slate-800 font-bold text-lg">ZEISS</div>
+            <h4 class="font-bold text-sm text-slate-900">Zeiss Optics</h4>
+            <p class="text-xs text-slate-500">Optical glass and cine prime lens collaborator.</p>
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-600">Active Tier 2</span>
+          </div>
+
+          <div class="admin-card p-5 text-center space-y-3">
+            <div class="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto text-slate-800 font-bold text-lg">CAC</div>
+            <h4 class="font-bold text-sm text-slate-900">Canadian Arts Council</h4>
+            <p class="text-xs text-slate-500">Exhibition grant & archival cultural heritage patron.</p>
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-purple-50 text-purple-600">Cultural Partner</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           VIEW 7: ANALYTICS
+           ===================================================================== -->
+      <section id="view-analytics" class="view-section space-y-6">
+        <div>
+          <h2 class="text-2xl font-bold tracking-tight text-slate-900">Platform Analytics & Storage</h2>
+          <p class="text-sm text-slate-500 mt-0.5">Real-time disk storage metrics, visitor engagement, and resolution analytics.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div class="admin-card p-5">
+            <p class="text-xs font-semibold text-slate-500">Disk Storage</p>
+            <h3 class="text-2xl font-bold text-slate-900 mt-0.5 font-mono" id="analytics-storage">237.1 MB</h3>
+            <p class="text-xs text-slate-400 mt-1">Across 84 master files in /images/</p>
+          </div>
+          <div class="admin-card p-5">
+            <p class="text-xs font-semibold text-slate-500">Avg. File Size</p>
+            <h3 class="text-2xl font-bold text-slate-900 mt-0.5 font-mono">2.82 MB</h3>
+            <p class="text-xs text-slate-400 mt-1">High-fidelity uncompressed JPG</p>
+          </div>
+          <div class="admin-card p-5">
+            <p class="text-xs font-semibold text-slate-500">Public Live Ratio</p>
+            <h3 class="text-2xl font-bold text-slate-900 mt-0.5 font-mono">94%</h3>
+            <p class="text-xs text-emerald-600 font-semibold mt-1">79 Public / 5 Private</p>
+          </div>
+          <div class="admin-card p-5">
+            <p class="text-xs font-semibold text-slate-500">CDN Cache Hit Rate</p>
+            <h3 class="text-2xl font-bold text-slate-900 mt-0.5 font-mono">98.4%</h3>
+            <p class="text-xs text-blue-600 font-semibold mt-1">Ultra-fast asset delivery</p>
+          </div>
+        </div>
+
+        <div class="admin-card p-6">
+          <h3 class="text-sm font-bold text-slate-900 mb-4">Device & Viewport Traffic Distribution</h3>
+          <div class="grid grid-cols-3 gap-4 text-center">
+            <div class="p-4 bg-slate-50 rounded-xl">
+              <i data-lucide="monitor" class="w-6 h-6 text-blue-600 mx-auto mb-2"></i>
+              <p class="font-bold text-lg text-slate-900">62%</p>
+              <p class="text-xs text-slate-500">Desktop Cinematic</p>
+            </div>
+            <div class="p-4 bg-slate-50 rounded-xl">
+              <i data-lucide="smartphone" class="w-6 h-6 text-emerald-600 mx-auto mb-2"></i>
+              <p class="font-bold text-lg text-slate-900">34%</p>
+              <p class="text-xs text-slate-500">Mobile Touch</p>
+            </div>
+            <div class="p-4 bg-slate-50 rounded-xl">
+              <i data-lucide="tablet" class="w-6 h-6 text-purple-600 mx-auto mb-2"></i>
+              <p class="font-bold text-lg text-slate-900">4%</p>
+              <p class="text-xs text-slate-500">Tablet / Kiosk</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================================
+           VIEW 8: SETTINGS
+           ===================================================================== -->
+      <section id="view-settings" class="view-section space-y-6">
+        <div>
+          <h2 class="text-2xl font-bold tracking-tight text-slate-900">System Settings & Controls</h2>
+          <p class="text-sm text-slate-500 mt-0.5">Platform configuration, security PIN passcode, and storage health.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Security PIN -->
+          <div class="admin-card p-6 space-y-4">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-slate-900">Executive Security PIN</h4>
+                <p class="text-xs text-slate-500">4-digit PIN protecting master vault operations</p>
+              </div>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl flex items-center justify-between text-xs">
+              <span>Current PIN: <strong class="font-mono text-slate-800">8899</strong></span>
+              <span class="text-emerald-600 font-bold flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Active
+              </span>
+            </div>
+            <button class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors" onclick="showToast('PIN security verified (Default: 8899)', 'success')">
+              Verify PIN Status
+            </button>
+          </div>
+
+          <!-- Server Diagnostics -->
+          <div class="admin-card p-6 space-y-4">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <i data-lucide="server" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-sm text-slate-900">Node.js Server Runtime</h4>
+                <p class="text-xs text-slate-500">Local dev server port 4173</p>
+              </div>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl space-y-1 text-xs">
+              <div class="flex justify-between text-slate-500">
+                <span>Status:</span>
+                <span class="text-emerald-600 font-bold">Online & Listening</span>
+              </div>
+              <div class="flex justify-between text-slate-500">
+                <span>Database Sync:</span>
+                <span class="font-mono text-slate-800">data/all-81-plates.json</span>
+              </div>
+              <div class="flex justify-between text-slate-500">
+                <span>Vault File:</span>
+                <span class="font-mono text-slate-800">data/admin-vault.json</span>
+              </div>
+            </div>
+            <button class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors" onclick="loadEverything(); showToast('Archive catalog re-indexed successfully!', 'success');">
+              Re-index Master Archive
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- =========================================================================
+       3. INTERACTIVE MODALS
+       ========================================================================= -->
+
+  <!-- Modal 1: Upload Photos Modal -->
+  <div id="modal-upload" class="modal-overlay modal-hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="modal-content-box bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+      
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+            <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">Upload Photos</h3>
+            <p class="text-[11px] text-slate-500">Add high-resolution photos to events or vault</p>
+          </div>
+        </div>
+        <button id="btn-close-upload-modal" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4">
+        
+        <!-- Drag & Drop Zone -->
+        <div id="upload-dropzone" class="border-2 border-dashed border-slate-200 hover:border-blue-500 bg-slate-50 hover:bg-blue-50/40 rounded-xl p-6 text-center cursor-pointer transition-all">
+          <input type="file" id="file-input-element" class="hidden" accept="image/*" multiple>
+          <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-3 shadow-2xs">
+            <i data-lucide="image-plus" class="w-6 h-6"></i>
+          </div>
+          <p class="text-xs font-bold text-slate-800">Click or drag images to upload</p>
+          <p class="text-[11px] text-slate-400 mt-1">Supports high-res JPG, PNG, WEBP</p>
+          <div id="selected-file-preview-name" class="mt-2 text-xs font-mono text-blue-600 font-semibold hidden"></div>
+        </div>
+
+        <div class="space-y-3 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Photo Title / Caption</label>
+            <input type="text" id="upload-photo-title" placeholder="e.g. Grand Opening Ceremony" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Category / Series</label>
+              <select id="upload-photo-category" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                <option value="Portraiture">Portraiture</option>
+                <option value="Alpinism">Alpinism</option>
+                <option value="Fauna">Fauna</option>
+                <option value="Botanica">Botanica</option>
+                <option value="Atmosphere">Atmosphere</option>
+                <option value="Ceremony">Ceremony</option>
+                <option value="Process">Process</option>
+                <option value="Private Vault" selected>Private Vault</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Visibility Status</label>
+              <select id="upload-photo-visibility" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                <option value="public">🌐 Public (Show on Website)</option>
+                <option value="private" selected>🔒 Private Vault (Hidden)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload Progress Indicator -->
+        <div id="upload-progress-box" class="hidden space-y-1.5 pt-2">
+          <div class="flex justify-between text-[11px] font-semibold text-slate-600">
+            <span>Uploading to server...</span>
+            <span id="upload-progress-percent">0%</span>
+          </div>
+          <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div id="upload-progress-bar" class="h-full bg-blue-600 rounded-full transition-all duration-300 w-0"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2.5">
+        <button id="btn-cancel-upload" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 rounded-lg hover:bg-slate-200/60 transition-colors">Cancel</button>
+        <button id="btn-submit-upload" class="px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-all flex items-center gap-2">
+          <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+          <span>Confirm Upload</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal 2: Create Event Modal -->
+  <div id="modal-create-event" class="modal-overlay modal-hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="modal-content-box bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="calendar-plus" class="w-4 h-4 text-emerald-600"></i>
+          <span>Create New Event</span>
+        </h3>
+        <button id="btn-close-event-modal" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="p-6 space-y-3.5 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Event Name</label>
+          <input type="text" id="new-event-name" placeholder="e.g. Summer Solstice Gala 2025" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Venue / Location</label>
+          <input type="text" id="new-event-location" placeholder="e.g. Metro Convention Centre" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Event Date</label>
+            <input type="date" id="new-event-date" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Photographer</label>
+            <input type="text" id="new-event-photographer" placeholder="Lead photographer" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800">
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Initial Status</label>
+          <select id="new-event-status" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 bg-white">
+            <option value="Active">Active</option>
+            <option value="Gallery Ready">Gallery Ready</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+      </div>
+      <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex justify-end gap-2">
+        <button id="btn-cancel-create-event" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-200/60 rounded-lg">Cancel</button>
+        <button id="btn-submit-create-event" class="px-5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm">Save Event</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Add User Modal -->
+  <div id="modal-add-user" class="modal-overlay modal-hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="modal-content-box bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="user-plus" class="w-4 h-4 text-orange-500"></i>
+          <span>Add Team Member / Client</span>
+        </h3>
+        <button id="btn-close-user-modal" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="p-6 space-y-3.5 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Full Name</label>
+          <input type="text" id="new-user-name" placeholder="e.g. Alex Morgan" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800">
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Email Address</label>
+          <input type="email" id="new-user-email" placeholder="alex@lifeinclicks.ca" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800">
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Role / Permissions</label>
+          <select id="new-user-role" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 bg-white">
+            <option value="Photographer">Photographer</option>
+            <option value="Event Lead">Event Lead</option>
+            <option value="Administrator">Administrator</option>
+            <option value="Client / VIP">Client / VIP</option>
+          </select>
+        </div>
+      </div>
+      <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex justify-end gap-2">
+        <button id="btn-cancel-add-user" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-200/60 rounded-lg">Cancel</button>
+        <button id="btn-submit-add-user" class="px-5 py-2 text-xs font-bold text-white bg-orange-500 hover:bg-orange-600 rounded-lg shadow-sm">Add Member</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Update Deal Stage & Notes Modal -->
+  <div id="modal-update-deal" class="modal-overlay modal-hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="modal-content-box bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="edit-3" class="w-4 h-4 text-emerald-600"></i>
+          <span>Update Customer Deal</span>
+        </h3>
+        <button id="btn-close-deal-modal" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="p-6 space-y-3.5 text-xs">
+        <input type="hidden" id="edit-deal-id">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Client Name</label>
+          <input type="text" id="edit-deal-name" disabled class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-600 font-semibold cursor-not-allowed">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Deal Stage</label>
+            <select id="edit-deal-status" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 bg-white">
+              <option value="New Inquiry">New Inquiry</option>
+              <option value="In Discussion">In Discussion</option>
+              <option value="Quoted">Quoted</option>
+              <option value="Advance Paid">Advance Paid (Booked)</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Quoted Amount ($)</label>
+            <input type="number" id="edit-deal-quote" placeholder="e.g. 5500" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800">
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Dealing & Negotiation Notes</label>
+          <textarea id="edit-deal-notes" rows="3" placeholder="Add notes about calls, client preferences, date availability..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 resize-none"></textarea>
+        </div>
+      </div>
+      <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
+        <button id="btn-delete-deal" class="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-lg flex items-center gap-1.5">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          <span>Delete Deal</span>
+        </button>
+        <div class="flex gap-2">
+          <button id="btn-cancel-update-deal" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-200/60 rounded-lg">Cancel</button>
+          <button id="btn-save-update-deal" class="px-5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Manual Lead Modal -->
+  <div id="modal-add-deal" class="modal-overlay modal-hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="modal-content-box bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="user-plus" class="w-4 h-4 text-emerald-600"></i>
+          <span>Add Offline Customer Lead</span>
+        </h3>
+        <button id="btn-close-add-deal-modal" class="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="p-6 space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Client / Couple Names *</label>
+          <input type="text" id="new-deal-name" placeholder="e.g. Jessica & Liam" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Phone / WhatsApp *</label>
+            <input type="tel" id="new-deal-phone" placeholder="+1 (825) 734-5178" required class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Email Address</label>
+            <input type="email" id="new-deal-email" placeholder="client@domain.com" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Event Type</label>
+            <input type="text" id="new-deal-type" placeholder="e.g. Wedding & Reception" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Event Date</label>
+            <input type="date" id="new-deal-date" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Location / Venue</label>
+            <input type="text" id="new-deal-venue" placeholder="e.g. Banff Springs" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Quoted Amount ($)</label>
+            <input type="number" id="new-deal-amount" placeholder="e.g. 4500" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800">
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Initial Notes</label>
+          <textarea id="new-deal-notes" rows="2" placeholder="Meeting summary or client preferences..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 resize-none"></textarea>
+        </div>
+      </div>
+      <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex justify-end gap-2">
+        <button id="btn-cancel-add-deal" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-200/60 rounded-lg">Cancel</button>
+        <button id="btn-submit-add-deal" class="px-5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm">Save Lead</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: High-Res Lightbox & EXIF Photo Inspector -->
+  <div id="modal-inspector" class="modal-overlay modal-hidden fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="modal-content-box bg-white w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col md:flex-row">
+      
+      <!-- High-res Image Stage -->
+      <div class="flex-1 bg-slate-950 flex items-center justify-center p-4 min-h-[320px] max-h-[75vh] overflow-hidden relative">
+        <img id="inspector-img-preview" src="" alt="Preview" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl">
+      </div>
+
+      <!-- Metadata & Control Panel -->
+      <div class="w-full md:w-80 bg-white p-6 flex flex-col justify-between border-t md:border-t-0 md:border-l border-slate-100 overflow-y-auto">
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <span id="inspector-badge" class="px-2.5 py-1 text-[11px] font-bold rounded-full bg-emerald-50 text-emerald-600">LIVE ON SITE</span>
+            <button id="btn-close-inspector" class="w-7 h-7 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <div>
+            <h4 class="font-bold text-base text-slate-900 leading-snug" id="inspector-modal-title">Photo Title</h4>
+            <p class="text-xs font-mono text-slate-400 break-all mt-1" id="inspector-filename">DSC03521.JPG</p>
+          </div>
+
+          <!-- Metadata table -->
+          <div class="space-y-2.5 text-xs border-t border-slate-100 pt-3">
+            <div class="flex justify-between text-slate-500">
+              <span>Series / Category</span>
+              <span class="font-semibold text-slate-800" id="inspector-category">Portraiture</span>
+            </div>
+            <div class="flex justify-between text-slate-500">
+              <span>File Size</span>
+              <span class="font-mono text-slate-800" id="inspector-filesize">2.4 MB</span>
+            </div>
+            <div class="flex justify-between text-slate-500">
+              <span>Camera</span>
+              <span class="font-medium text-slate-800" id="inspector-camera">Sony α6700</span>
+            </div>
+            <div class="flex justify-between text-slate-500">
+              <span>Lens / Setting</span>
+              <span class="font-medium text-slate-800" id="inspector-lens">70-200mm f/2.8</span>
+            </div>
+            <div class="flex justify-between text-slate-500">
+              <span>Exposure</span>
+              <span class="font-mono text-slate-800" id="inspector-exposure">1/800s · ISO 160</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="space-y-2 pt-6 border-t border-slate-100">
+          <button id="btn-inspector-toggle-vis" class="w-full py-2.5 px-3 text-xs font-bold border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-700 flex items-center justify-center gap-2 transition-all">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+            <span id="btn-inspector-toggle-label">Toggle Public/Private</span>
+          </button>
+          <button id="btn-inspector-copy-url" class="w-full py-2 px-3 text-xs font-semibold text-slate-600 hover:bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-center gap-1.5">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span>Copy Image Path</span>
+          </button>
+          <button id="btn-inspector-delete" class="w-full py-2 px-3 text-xs font-bold text-rose-600 hover:bg-rose-50 border border-rose-200 rounded-lg flex items-center justify-center gap-1.5 transition-all">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <span>Delete Photo</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MOBILE BOTTOM NAVIGATION BAR (md:hidden)
+       ========================================================================= -->
+  <nav id="mobile-bottom-nav" class="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-[#0d1527] border-t border-white/10 px-2 py-1.5 flex items-center justify-around shadow-2xl backdrop-blur-md">
+    <button class="mobile-nav-btn flex flex-col items-center justify-center px-3 py-1 text-blue-400 text-[10px] font-medium transition-colors" data-view="dashboard">
+      <i data-lucide="layout-dashboard" class="w-5 h-5 mb-0.5"></i>
+      <span>Home</span>
+    </button>
+    <button class="mobile-nav-btn flex flex-col items-center justify-center px-3 py-1 text-slate-400 hover:text-emerald-300 text-[10px] font-medium transition-colors relative" data-view="deals">
+      <i data-lucide="handshake" class="w-5 h-5 mb-0.5"></i>
+      <span>Deals</span>
+      <span class="absolute top-1 right-2 w-2 h-2 rounded-full bg-emerald-400"></span>
+    </button>
+    <button class="mobile-nav-btn flex flex-col items-center justify-center px-3 py-1 text-slate-400 hover:text-white text-[10px] font-medium transition-colors" data-view="photos">
+      <i data-lucide="image" class="w-5 h-5 mb-0.5"></i>
+      <span>Photos</span>
+    </button>
+    <button class="mobile-nav-btn flex flex-col items-center justify-center px-3 py-1 text-slate-400 hover:text-white text-[10px] font-medium transition-colors" data-view="events">
+      <i data-lucide="calendar" class="w-5 h-5 mb-0.5"></i>
+      <span>Events</span>
+    </button>
+    <button id="btn-mobile-more-menu" class="flex flex-col items-center justify-center px-3 py-1 text-slate-400 hover:text-white text-[10px] font-medium transition-colors">
+      <i data-lucide="menu" class="w-5 h-5 mb-0.5"></i>
+      <span>Menu</span>
+    </button>
+  </nav>
+
+  <!-- Admin Controller Script -->
+  <script src="js/admin.js"></script>
+</body>
+</html>

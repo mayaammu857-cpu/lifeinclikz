@@ -1,0 +1,54 @@
+[
+  {
+    "id": "evt-01",
+    "name": "Spring Carnival 2025",
+    "location": "Riverside Park, Toronto",
+    "date": "2025-04-12",
+    "photographer": "John Carter",
+    "status": "Active",
+    "photosCount": 1842,
+    "coverImage": "images/6145573222888444980_121.jpg",
+    "views": 1842,
+    "downloads": 1236,
+    "description": "Annual community spring festival with parade, performances, and street celebrations."
+  },
+  {
+    "id": "evt-02",
+    "name": "Tech Conference 2025",
+    "location": "Metro Convention Centre",
+    "date": "2025-04-05",
+    "photographer": "Sarah Wilson",
+    "status": "Active",
+    "photosCount": 2416,
+    "coverImage": "images/6145573222888444988_121.jpg",
+    "views": 1456,
+    "downloads": 982,
+    "description": "Leading technology summit keynote, panel sessions, and developer workshops."
+  },
+  {
+    "id": "evt-03",
+    "name": "Wedding – Emily & James",
+    "location": "The Grand Hotel",
+    "date": "2025-03-28",
+    "photographer": "Mike Davis",
+    "status": "Gallery Ready",
+    "photosCount": 1236,
+    "coverImage": "images/hero-couple.jpg",
+    "views": 1203,
+    "downloads": 876,
+    "description": "Intimate luxury ceremony and evening reception with bespoke editorial portraiture."
+  },
+  {
+    "id": "evt-04",
+    "name": "Corporate Event – Nexa",
+    "location": "Hilton Hotel",
+    "date": "2025-03-20",
+    "photographer": "Lisa Brown",
+    "status": "Completed",
+    "photosCount": 982,
+    "coverImage": "images/6145573222888444990_121.jpg",
+    "views": 932,
+    "downloads": 654,
+    "description": "Global tech leadership banquet, corporate awards, and networking evening."
+  }
+]
