@@ -1,0 +1,285 @@
+/* ==========================================================================
+   EDITORIAL SPREAD — HIGH-FASHION MONOGRAPH VIEW
+   Art Direction + Asymmetrical Spreads + Editorial Typography
+   ========================================================================== */
+
+.editorial-view {
+  position: relative;
+  width: 100%;
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 140px var(--space-xl) 180px;
+  z-index: var(--z-canvas-elements);
+}
+
+/* Monograph Cover Header */
+.editorial-hero-prologue {
+  margin-bottom: var(--space-4xl);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: var(--space-3xl);
+}
+
+.editorial-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-accent);
+  margin-bottom: var(--space-md);
+  display: block;
+}
+
+.editorial-headline {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6.5vw, 6rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xl);
+}
+
+.editorial-curator-statement {
+  font-family: var(--font-serif);
+  font-size: clamp(1.25rem, 2.2vw, 1.85rem);
+  line-height: 1.45;
+  color: var(--text-secondary);
+  font-style: italic;
+  max-width: 900px;
+  margin-bottom: var(--space-2xl);
+}
+
+.editorial-stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xl);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.editorial-stat-item span {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Chapters & Section Structures */
+.editorial-chapter {
+  margin-bottom: var(--space-4xl);
+  scroll-margin-top: 100px;
+}
+
+.editorial-chapter-header {
+  position: sticky;
+  top: 80px;
+  background: linear-gradient(to bottom, var(--bg-deep) 70%, transparent);
+  padding: var(--space-lg) 0;
+  z-index: 20;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: var(--space-2xl);
+  backdrop-filter: blur(8px);
+}
+
+.chapter-number {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--text-accent);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.chapter-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+/* Asymmetric Editorial Spread Grid */
+.editorial-spread-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-2xl) var(--space-xl);
+  align-items: start;
+}
+
+/* Staggered Plate Placement Variations */
+.spread-card {
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.4s var(--ease-expo);
+}
+
+.spread-card:focus-visible {
+  outline: 2px solid var(--text-accent);
+  outline-offset: 6px;
+}
+
+.spread-card.span-12 {
+  grid-column: span 12;
+}
+
+.spread-card.span-7 {
+  grid-column: span 7;
+}
+
+.spread-card.span-5 {
+  grid-column: span 5;
+}
+
+.spread-card.span-6 {
+  grid-column: span 6;
+}
+
+.spread-card.span-4 {
+  grid-column: span 4;
+}
+
+.spread-card.offset-1 {
+  margin-top: var(--space-3xl);
+}
+
+.spread-card.offset-2 {
+  margin-top: -40px;
+}
+
+/* Photo Box in Editorial Mode */
+.editorial-photo-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xs);
+  background-color: #121418;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-medium);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.spread-card:hover .editorial-photo-wrap {
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-heavy);
+}
+
+.editorial-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s var(--ease-expo), filter 0.8s var(--ease-expo);
+  filter: brightness(0.95);
+}
+
+.spread-card:hover .editorial-photo-wrap img {
+  transform: scale(1.03);
+  filter: brightness(1.02);
+}
+
+/* Editorial Caption Block */
+.editorial-caption-block {
+  margin-top: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.caption-top-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.caption-plate-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.caption-prose {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.caption-tech-stamp {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+
+/* Pull Quote Callout */
+.editorial-pull-quote {
+  grid-column: span 12;
+  margin: var(--space-3xl) 0;
+  padding: var(--space-2xl) var(--space-3xl);
+  border-left: 2px solid var(--text-accent);
+  background: var(--bg-surface);
+  backdrop-filter: blur(12px);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.editorial-pull-quote p {
+  font-family: var(--font-serif);
+  font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+  line-height: 1.35;
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+.editorial-pull-quote cite {
+  display: block;
+  margin-top: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-accent);
+  font-style: normal;
+}
+
+/* Responsive adjustments for Editorial Spread */
+@media (max-width: 1024px) {
+  .spread-card.span-7,
+  .spread-card.span-5,
+  .spread-card.span-6,
+  .spread-card.span-4 {
+    grid-column: span 6;
+  }
+  .spread-card.offset-1,
+  .spread-card.offset-2 {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .editorial-view {
+    padding: 100px var(--space-md) 140px;
+  }
+  .editorial-spread-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+  }
+  .spread-card.span-7,
+  .spread-card.span-5,
+  .spread-card.span-6,
+  .spread-card.span-4,
+  .spread-card.span-12 {
+    grid-column: span 1;
+  }
+  .editorial-pull-quote {
+    padding: var(--space-lg);
+  }
+}

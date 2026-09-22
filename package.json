@@ -1,0 +1,20 @@
+{
+  "name": "lifecycle-art-archive",
+  "version": "1.0.0",
+  "description": "LIFECYCLE — Interactive Art Archive & Visual Universe",
+  "main": "index.html",
+  "scripts": {
+    "start": "node serve.js",
+    "dev": "node serve.js"
+  },
+  "keywords": [
+    "photography",
+    "art-direction",
+    "interactive-installation",
+    "archive",
+    "visual-universe",
+    "editorial"
+  ],
+  "author": "LIFECYCLE Studio",
+  "license": "MIT"
+}

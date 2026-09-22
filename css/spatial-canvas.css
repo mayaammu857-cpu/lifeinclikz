@@ -1,0 +1,275 @@
+/* ==========================================================================
+   SPATIAL UNIVERSE — 2.5D INTERACTIVE CANVAS
+   Freeform Exploration Inspired by Kavieng Creative
+   ========================================================================== */
+
+.spatial-viewport {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  z-index: var(--z-canvas-elements);
+}
+
+.spatial-viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.spatial-world {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* Background Constellation Lines (SVG) */
+.spatial-constellations-svg {
+  position: absolute;
+  top: -2400px;
+  left: -2800px;
+  width: 5600px;
+  height: 4800px;
+  pointer-events: none;
+  z-index: var(--z-canvas-lines);
+  overflow: visible;
+}
+
+.constellation-path {
+  stroke: rgba(255, 255, 255, 0.04);
+  stroke-dasharray: 4 8;
+  stroke-width: 1px;
+  fill: none;
+  transition: stroke 0.6s ease;
+}
+
+.constellation-path.is-active {
+  stroke: rgba(255, 255, 255, 0.18);
+  stroke-dasharray: none;
+  stroke-width: 1.5px;
+}
+
+/* Spatial Plate Node */
+.spatial-plate-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.5s var(--ease-expo), filter 0.5s var(--ease-expo);
+  will-change: transform, opacity;
+  cursor: pointer;
+  outline: none;
+}
+
+.spatial-plate-node.is-filtered-out {
+  opacity: 0.12;
+  filter: grayscale(80%) blur(2px);
+  pointer-events: none;
+}
+
+.spatial-plate-inner {
+  position: relative;
+  background: var(--bg-glass-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-medium);
+  transform-style: preserve-3d;
+  transition: transform 0.45s var(--ease-expo), 
+              border-color 0.4s var(--ease-expo), 
+              box-shadow 0.4s var(--ease-expo);
+}
+
+.spatial-plate-node:hover .spatial-plate-inner,
+.spatial-plate-node:focus-visible .spatial-plate-inner {
+  border-color: var(--node-accent, rgba(255, 255, 255, 0.4));
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), 
+              0 0 35px var(--node-glow, rgba(255, 255, 255, 0.15));
+  transform: scale(1.04) translateZ(30px);
+}
+
+.spatial-plate-node:focus-visible .spatial-plate-inner {
+  outline: 2px solid var(--text-accent);
+  outline-offset: 4px;
+}
+
+/* Photo Thumbnail Wrapper */
+.spatial-thumb-box {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xs);
+  background-color: #121418;
+}
+
+.spatial-thumb-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s var(--ease-expo), filter 0.7s var(--ease-expo);
+  filter: brightness(0.92) contrast(1.04);
+}
+
+.spatial-plate-node:hover .spatial-thumb-box img {
+  transform: scale(1.05);
+  filter: brightness(1.03) contrast(1.06);
+}
+
+/* Dimensions for Portrait vs Landscape Nodes */
+.spatial-plate-node[data-orientation="portrait"] .spatial-thumb-box {
+  width: 220px;
+  height: 330px;
+}
+
+.spatial-plate-node[data-orientation="landscape"] .spatial-thumb-box {
+  width: 320px;
+  height: 200px;
+}
+
+/* Card Micro HUD Meta */
+.spatial-node-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  padding: 0 4px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.node-meta-index {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.node-meta-title {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.72rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.node-meta-tag {
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* Hover Aura Ripple */
+.spatial-node-aura {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--node-glow, rgba(255, 255, 255, 0.2)) 0%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.8);
+  transition: opacity 0.5s ease, transform 0.5s var(--ease-expo);
+  z-index: -1;
+}
+
+.spatial-plate-node:hover .spatial-node-aura {
+  opacity: 1;
+  transform: scale(1.4);
+}
+
+/* Radar Minimap HUD */
+.spatial-minimap {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 140px;
+  height: 100px;
+  background: rgba(12, 14, 18, 0.75);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(16px);
+  z-index: var(--z-canvas-hud);
+  pointer-events: auto;
+  padding: 8px;
+  box-shadow: var(--shadow-medium);
+  transition: opacity 0.3s ease, border-color 0.3s;
+}
+
+.spatial-minimap:hover {
+  border-color: var(--border-prominent);
+}
+
+.minimap-header {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.minimap-radar-view {
+  position: relative;
+  width: 100%;
+  height: 64px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+}
+
+.minimap-blip {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%);
+}
+
+.minimap-blip.is-active {
+  background: var(--text-accent);
+  box-shadow: 0 0 6px var(--text-accent);
+}
+
+.minimap-viewport-box {
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Canvas Hint HUD */
+.spatial-navigation-hint {
+  position: fixed;
+  top: 96px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: rgba(14, 16, 20, 0.6);
+  padding: 6px 18px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(12px);
+  pointer-events: none;
+  z-index: var(--z-canvas-hud);
+  animation: pulseHint 3s infinite ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@keyframes pulseHint {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}

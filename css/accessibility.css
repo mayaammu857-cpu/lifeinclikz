@@ -1,0 +1,132 @@
+/* ==========================================================================
+   SECTION 20: ACCESSIBILITY & REDUCED MOTION SPECIFICATION
+   WCAG 2.1 AAA Compliance, High Contrast & Reduced Motion Architecture
+   ========================================================================== */
+
+/* Screen Reader Only Utilities */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only-focusable:focus {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: var(--z-cursor);
+  width: auto;
+  height: auto;
+  clip: auto;
+  padding: 12px 20px;
+  background: var(--text-accent);
+  color: var(--bg-deep);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-heavy);
+  outline: 3px solid #ffffff;
+}
+
+/* High Contrast & Focus Visible Rings */
+:focus-visible {
+  outline: 2px solid var(--text-accent) !important;
+  outline-offset: 4px !important;
+}
+
+/* Keyboard Shortcut Hint Tooltips */
+.kbd-shortcut-hint {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-secondary);
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+/* ==========================================================================
+   REDUCED MOTION MODE (OS PREFERENCE OR MANUAL HUD TOGGLE)
+   "If the user enables prefers-reduced-motion: 
+    disable large motion effects and provide a simpler browsing experience."
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-quick: 0ms !important;
+    --duration-medium: 0ms !important;
+    --duration-deliberate: 0ms !important;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .custom-cursor {
+    display: none !important;
+  }
+
+  body {
+    cursor: auto !important;
+  }
+
+  .spatial-world,
+  .spatial-plate-inner,
+  .projection-photo-frame img,
+  .ambient-aura-layer {
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .spatial-navigation-hint {
+    animation: none !important;
+    opacity: 0.8 !important;
+  }
+}
+
+/* Manual Reduced Motion Class Toggle via Accessibility HUD */
+body.reduced-motion-active {
+  --duration-quick: 0ms !important;
+  --duration-medium: 0ms !important;
+  --duration-deliberate: 0ms !important;
+}
+
+body.reduced-motion-active *,
+body.reduced-motion-active *::before,
+body.reduced-motion-active *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+body.reduced-motion-active .custom-cursor {
+  display: none !important;
+}
+
+body.reduced-motion-active .spatial-world,
+body.reduced-motion-active .spatial-plate-inner,
+body.reduced-motion-active .projection-photo-frame img,
+body.reduced-motion-active .ambient-aura-layer {
+  transform: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+body.reduced-motion-active .spatial-navigation-hint {
+  animation: none !important;
+  opacity: 0.8 !important;
+}

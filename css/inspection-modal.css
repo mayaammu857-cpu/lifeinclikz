@@ -1,0 +1,535 @@
+/* ==========================================================================
+   INSPECTION MODAL & OPTICAL LOUPE
+   Deep Photographic Monograph & Commercial Licensing Suite
+   ========================================================================== */
+
+.inspection-dialog {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  background: rgba(6, 7, 9, 0.94);
+  backdrop-filter: blur(28px);
+  border: none;
+  z-index: var(--z-modal);
+  overflow-y: auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s var(--ease-expo);
+  flex-direction: column;
+}
+
+.inspection-dialog:not(.is-open):not([open]) {
+  display: none !important;
+}
+
+.inspection-dialog.is-open,
+.inspection-dialog[open] {
+  display: flex !important;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Modal HUD Bar */
+.inspection-nav-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-lg) var(--space-2xl);
+  background: linear-gradient(to bottom, rgba(6, 7, 9, 0.9) 60%, transparent);
+  z-index: 50;
+}
+
+.inspection-counter-stamp {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--text-accent);
+  text-transform: uppercase;
+}
+
+.inspection-actions-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.inspection-close-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface);
+  transition: all 0.2s var(--ease-expo);
+}
+
+.inspection-close-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-prominent);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Inspection Content Layout */
+.inspection-body {
+  flex: 1;
+  max-width: 1680px;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--space-md) var(--space-2xl) var(--space-4xl);
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: var(--space-4xl);
+  align-items: center;
+}
+
+/* Photographic Stage & Optical Loupe */
+.inspection-photo-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 520px;
+}
+
+.inspection-image-container {
+  position: relative;
+  max-width: 100%;
+  max-height: 82vh;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  box-shadow: var(--shadow-heavy);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: crosshair;
+  background-color: #0b0c0f;
+}
+
+.inspection-image-container img {
+  display: block;
+  max-height: 82vh;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Optical Loupe Magnifier Lens */
+.optical-loupe-lens {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.4), 
+              0 20px 40px rgba(0, 0, 0, 0.8),
+              inset 0 0 15px rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+  overflow: hidden;
+  display: none;
+  background-repeat: no-repeat;
+  z-index: 100;
+  transform: translate(-50%, -50%);
+}
+
+.optical-loupe-lens::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  transform: translate(-50%, -50%);
+  border-left: 1px solid rgba(255, 255, 255, 0.6);
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+}
+
+.loupe-lens-label {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 2px 6px;
+  border-radius: var(--radius-pill);
+  color: var(--text-accent);
+  text-transform: uppercase;
+}
+
+/* Curatorial Monograph Sidebar */
+.inspection-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  max-width: 580px;
+}
+
+.inspection-series-pill {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-accent);
+}
+
+.inspection-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.6vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin: 6px 0 16px;
+}
+
+.inspection-essay {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  font-style: italic;
+  border-left: 1px solid var(--border-prominent);
+  padding-left: var(--space-lg);
+}
+
+/* Technical Specification Matrix */
+.inspection-specs-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: var(--space-lg);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md) var(--space-lg);
+}
+
+.spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.spec-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.spec-value {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Color Harmony Palette Extract */
+.inspection-palette-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.palette-heading {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.palette-bars-row {
+  display: flex;
+  height: 38px;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.palette-bar-segment {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  cursor: pointer;
+  transition: flex 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.palette-bar-segment:hover {
+  flex: 1.6;
+}
+
+.palette-hex-code {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: #fff;
+  opacity: 0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+.palette-bar-segment:hover .palette-hex-code {
+  opacity: 1;
+}
+
+/* Navigation Pager & Inquire Action */
+.inspection-bottom-cta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.pager-nav-group {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.pager-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.pager-nav-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-prominent);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.commercial-inquire-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: var(--text-primary);
+  color: var(--bg-deep);
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  transition: transform 0.2s var(--ease-expo), background-color 0.2s;
+}
+
+.commercial-inquire-btn:hover {
+  transform: translateY(-2px);
+  background: var(--text-accent);
+}
+
+/* ==========================================================================
+   STUDIO & COMMERCIAL INQUIRY DRAWERS
+   ========================================================================== */
+
+.slide-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  z-index: var(--z-modal);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease-expo);
+}
+
+.slide-drawer-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.slide-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 580px;
+  background: var(--bg-surface-elevated);
+  border-left: 1px solid var(--border-prominent);
+  backdrop-filter: blur(28px);
+  padding: var(--space-3xl) var(--space-2xl);
+  overflow-y: auto;
+  z-index: calc(var(--z-modal) + 1);
+  transform: translateX(100%);
+  transition: transform 0.5s var(--ease-expo);
+}
+
+.slide-drawer-backdrop.is-open .slide-drawer {
+  transform: translateX(0);
+}
+
+.drawer-close-btn {
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.drawer-close-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-prominent);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.drawer-headline {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-lg);
+}
+
+.drawer-body-text {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2xl);
+}
+
+.drawer-gear-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-2xl);
+}
+
+.drawer-gear-item {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.gear-label {
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.gear-value {
+  color: var(--text-primary);
+}
+
+/* Inquiry Form */
+.inquiry-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.form-input,
+.form-textarea {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: 10px 14px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  border-color: var(--text-accent);
+}
+
+.form-submit-btn {
+  margin-top: var(--space-md);
+  padding: 14px;
+  background: var(--text-accent);
+  color: var(--bg-deep);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-radius: var(--radius-pill);
+  transition: filter 0.2s;
+}
+
+.form-submit-btn:hover {
+  filter: brightness(1.1);
+}
+
+/* Responsive Inspection Layout */
+@media (max-width: 1024px) {
+  .inspection-body {
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+  }
+  .inspection-sidebar {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .inspection-nav-header {
+    padding: var(--space-md);
+  }
+  .inspection-body {
+    padding: var(--space-sm) var(--space-md) var(--space-3xl);
+  }
+  .slide-drawer {
+    max-width: 100%;
+    padding: var(--space-2xl) var(--space-md);
+  }
+}

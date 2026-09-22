@@ -1,0 +1,265 @@
+/* ==========================================================================
+   LIFECYCLE DESIGN SYSTEM — TOKENS & FOUNDATION
+   Art Direction + Editorial Design + Interactive Installation
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Syne:wght@400;500;700;800&display=swap');
+
+:root {
+  /* Color Palette - Obsidian Noir & Monochromatic Foundations */
+  --bg-deep: #070709;
+  --bg-canvas: #0b0c0f;
+  --bg-surface: rgba(18, 20, 24, 0.72);
+  --bg-surface-elevated: rgba(28, 32, 38, 0.88);
+  --bg-glass: rgba(14, 16, 20, 0.65);
+  --bg-glass-card: rgba(22, 25, 30, 0.45);
+  --bg-glass-active: rgba(255, 255, 255, 0.08);
+
+  /* Borders & Dividers */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-prominent: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(255, 255, 255, 0.24);
+
+  /* Typography */
+  --font-display: 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* Text Colors */
+  --text-primary: #fcfcfc;
+  --text-secondary: #a6abb4;
+  --text-muted: #6b7280;
+  --text-tertiary: #4b5260;
+  --text-accent: #e5c17b;
+
+  /* Dynamic Ambient Aura (mutated dynamically via JS) */
+  --aura-color-1: rgba(0, 150, 180, 0.22);
+  --aura-color-2: rgba(212, 146, 38, 0.12);
+  --aura-position-x: 50%;
+  --aura-position-y: 50%;
+
+  /* Fluid Spacing Scale */
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+
+  /* Border Radii */
+  --radius-xs: 3px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+
+  /* Shadows */
+  --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --shadow-medium: 0 12px 36px rgba(0, 0, 0, 0.55);
+  --shadow-heavy: 0 24px 64px rgba(0, 0, 0, 0.75);
+  --shadow-glow: 0 0 40px var(--aura-color-1);
+
+  /* Easing & Timing */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-quick: 200ms;
+  --duration-medium: 380ms;
+  --duration-deliberate: 650ms;
+
+  /* Layer Hierarchy */
+  --z-canvas-bg: 0;
+  --z-canvas-elements: 10;
+  --z-canvas-lines: 5;
+  --z-canvas-hud: 100;
+  --z-overlay: 500;
+  --z-modal: 1000;
+  --z-cursor: 9999;
+}
+
+/* ==========================================================================
+   RESET & CORE BOX MODEL
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  background-color: var(--bg-deep);
+  color: var(--text-primary);
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  min-height: 100%;
+  background-color: var(--bg-deep);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Base Link & Button resets */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   ATMOSPHERIC VIGNETTE & CHROMATIC AURA OVERLAYS
+   ========================================================================== */
+
+.ambient-aura-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-canvas-bg);
+  background: 
+    radial-gradient(
+      circle 700px at var(--aura-position-x) var(--aura-position-y), 
+      var(--aura-color-1) 0%, 
+      transparent 75%
+    ),
+    radial-gradient(
+      circle 900px at 80% 20%, 
+      var(--aura-color-2) 0%, 
+      transparent 70%
+    );
+  transition: background 0.8s var(--ease-expo);
+  opacity: 0.85;
+}
+
+.ambient-film-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.ambient-vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.85);
+}
+
+/* ==========================================================================
+   CUSTOM KINETIC CURSOR
+   ========================================================================== */
+
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+  z-index: var(--z-cursor);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s var(--ease-expo), 
+              height 0.3s var(--ease-expo), 
+              background 0.3s var(--ease-expo), 
+              border-color 0.3s var(--ease-expo),
+              transform 0.1s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+
+.custom-cursor-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: transform 0.2s var(--ease-expo), opacity 0.2s;
+}
+
+.custom-cursor-text {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+/* Cursor Context States */
+body.cursor-drag .custom-cursor {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+body.cursor-drag .custom-cursor-dot {
+  opacity: 0;
+}
+body.cursor-drag .custom-cursor-text {
+  opacity: 1;
+}
+
+body.cursor-inspect .custom-cursor {
+  width: 74px;
+  height: 74px;
+  background: rgba(0, 0, 0, 0.6);
+  border-color: var(--text-accent);
+  border-width: 1.5px;
+}
+body.cursor-inspect .custom-cursor-dot {
+  opacity: 0;
+}
+body.cursor-inspect .custom-cursor-text {
+  opacity: 1;
+  color: var(--text-accent);
+}
+
+/* Disable custom cursor on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .custom-cursor {
+    display: none !important;
+  }
+}
