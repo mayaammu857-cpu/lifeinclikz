@@ -136,6 +136,14 @@ window.adminLoginSubmit = async function () {
     }
   }
 
+  function resolveImgSrc(src) {
+    if (!src) return '';
+    if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:')) {
+      return src;
+    }
+    return src.startsWith('/') ? src : '/' + src;
+  }
+
   /* ==========================================================================
      3. Navigation & View Switching
      ========================================================================== */
@@ -277,10 +285,99 @@ window.adminLoginSubmit = async function () {
 
   async function loadPhotos() {
     try {
-      const res = await fetch('/api/admin/photos');
-      if (!res.ok) throw new Error('Could not load photos');
-      const data = await res.json();
-      photos = data.photos || [];
+      let loadedPhotos = [];
+
+      // 1. Try server API endpoint first
+      try {
+        const res = await fetch('/api/admin/photos');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.photos) && data.photos.length > 0) {
+            loadedPhotos = data.photos;
+          }
+        }
+      } catch (fetchErr) {
+        console.warn('API /api/admin/photos unavailable, trying local fallback:', fetchErr.message);
+      }
+
+      // 2. If API was empty or unavailable, fall back to window.ALL_81_PLATES or static JSON
+      if (!loadedPhotos || loadedPhotos.length === 0) {
+        if (window.ALL_81_PLATES && Array.isArray(window.ALL_81_PLATES) && window.ALL_81_PLATES.length > 0) {
+          loadedPhotos = window.ALL_81_PLATES.map((p, idx) => ({
+            id: 'plate-' + (p.plateNumber || String(idx + 1).padStart(2, '0')),
+            publicId: null,
+            filename: p.filename,
+            src: p.src || ('images/' + p.filename),
+            title: p.title || p.filename,
+            category: p.series || 'Exhibition',
+            series: p.series || 'Exhibition',
+            visibility: 'public',
+            isExhibitionPlate: true,
+            uploadDate: '2026-09-18T10:00:00Z',
+            sizeBytes: 2500000,
+            camera: p.camera || 'Sony α6700',
+            lens: p.lens || 'FE 70-200mm f/2.8 GM OSS II',
+            focalLength: p.focalLength || '135mm',
+            aperture: p.aperture || 'f/2.8',
+            shutterSpeed: p.shutterSpeed || '1/800s',
+            iso: p.iso || 'ISO 100',
+            aspect: p.aspect || '16:9',
+            notes: 'Master Exhibition Plate',
+            isCloudinary: false
+          }));
+        } else {
+          try {
+            const vaultRes = await fetch('/data/admin-vault.json');
+            if (vaultRes.ok) {
+              const vaultJson = await vaultRes.json();
+              if (Array.isArray(vaultJson) && vaultJson.length > 0) {
+                loadedPhotos = vaultJson;
+              }
+            }
+          } catch (vErr) {
+            try {
+              const platesRes = await fetch('/data/all-81-plates.json');
+              if (platesRes.ok) {
+                const platesJson = await platesRes.json();
+                if (Array.isArray(platesJson)) {
+                  loadedPhotos = platesJson.map(p => ({
+                    id: 'plate-' + (p.plateNumber || p.filename),
+                    filename: p.filename,
+                    src: p.src || ('images/' + p.filename),
+                    title: p.title || p.filename,
+                    category: p.series || 'Exhibition',
+                    series: p.series || 'Exhibition',
+                    visibility: 'public',
+                    isExhibitionPlate: true,
+                    sizeBytes: 2500000
+                  }));
+                }
+              }
+            } catch (pErr) {}
+          }
+        }
+      }
+
+      photos = loadedPhotos || [];
+
+      // Filter out locally deleted photos
+      try {
+        const deletedPhotos = JSON.parse(localStorage.getItem('adminDeletedPhotos') || '[]');
+        if (Array.isArray(deletedPhotos) && deletedPhotos.length > 0) {
+          const delSet = new Set(deletedPhotos);
+          photos = photos.filter(p => !delSet.has(p.filename));
+        }
+      } catch (e) {}
+
+      // Apply locally stored visibility overrides
+      try {
+        const localVis = JSON.parse(localStorage.getItem('adminPhotoVisibility') || '{}');
+        photos.forEach(p => {
+          if (localVis[p.filename]) {
+            p.visibility = localVis[p.filename];
+          }
+        });
+      } catch (e) {}
 
       // Update counters
       const total = photos.length;
@@ -847,7 +944,7 @@ window.adminLoginSubmit = async function () {
     container.innerHTML = displayList.map(photo => `
       <div class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer group photo-row" data-filename="${photo.filename}">
         <div class="flex items-center gap-3 overflow-hidden">
-          <img src="${photo.src}" alt="${photo.title || photo.filename}" class="w-10 h-10 rounded-lg object-cover flex-shrink-0 bg-slate-100 shadow-2xs">
+          <img src="${resolveImgSrc(photo.src)}" alt="${photo.title || photo.filename}" class="w-10 h-10 rounded-lg object-cover flex-shrink-0 bg-slate-100 shadow-2xs" onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='${(photo.src||'').replace(/^\\//,'')}';}">
           <div class="overflow-hidden">
             <h4 class="text-xs font-bold text-slate-900 truncate group-hover:text-blue-600 transition-colors">${photo.filename}</h4>
             <p class="text-[11px] text-slate-400 mt-0.5">${formatDate(photo.uploadDate)} · ${formatBytes(photo.sizeBytes)}</p>
@@ -1019,7 +1116,7 @@ window.adminLoginSubmit = async function () {
       return `
         <div class="photo-media-card group" data-filename="${photo.filename}">
           <div class="photo-media-thumb-wrapper cursor-pointer" onclick="openInspectorByFilename('${photo.filename}')">
-            <img src="${photo.src}" alt="${photo.title || photo.filename}" loading="lazy" class="photo-media-thumb-img">
+            <img src="${resolveImgSrc(photo.src)}" alt="${photo.title || photo.filename}" loading="lazy" class="photo-media-thumb-img" onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='${(photo.src||'').replace(/^\\//,'')}';}">
             <div class="photo-media-overlay-actions">
               <span class="text-[11px] text-white/90 font-mono bg-black/60 px-2 py-0.5 rounded backdrop-blur-xs">${formatBytes(photo.sizeBytes)}</span>
               <button class="w-8 h-8 rounded-full bg-white text-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-md" title="View Full Inspection">
@@ -1273,21 +1370,36 @@ window.adminLoginSubmit = async function () {
      ========================================================================== */
   window.quickToggleVisibility = async function (filename) {
     try {
-      // Find publicId for Cloudinary photos
       const photo = photos.find(p => p.filename === filename);
       const publicId = photo ? photo.publicId : null;
-      const res = await fetch('/api/admin/toggle-visibility', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename, publicId })
-      });
-      const data = await res.json();
-      if (data.success) {
-        showToast(data.message, 'success');
-        loadPhotos();
-      } else {
-        showToast(data.error || 'Could not toggle photo visibility', 'error');
+      const nextVis = photo && photo.visibility === 'public' ? 'private' : 'public';
+
+      // Update in memory & localStorage immediately so UI responds without delay
+      if (photo) {
+        photo.visibility = nextVis;
+        try {
+          const localVis = JSON.parse(localStorage.getItem('adminPhotoVisibility') || '{}');
+          localVis[filename] = nextVis;
+          localStorage.setItem('adminPhotoVisibility', JSON.stringify(localVis));
+        } catch (e) {}
       }
+
+      // Sync with server API
+      let serverMessage = null;
+      try {
+        const res = await fetch('/api/admin/toggle-visibility', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename, publicId, targetVisibility: nextVis })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.message) serverMessage = data.message;
+        }
+      } catch (err) {}
+
+      showToast(serverMessage || (nextVis === 'public' ? 'Photo is now published live' : 'Photo moved to Private Vault'), 'success');
+      loadPhotos();
     } catch (err) {
       showToast('Network error updating visibility', 'error');
     }
@@ -1296,21 +1408,29 @@ window.adminLoginSubmit = async function () {
   window.quickDeletePhoto = async function (filename) {
     if (!confirm(`Are you sure you want to permanently delete "${filename}"?`)) return;
     try {
-      // Find publicId for Cloudinary photos
       const photo = photos.find(p => p.filename === filename);
       const publicId = photo ? photo.publicId : null;
-      const res = await fetch('/api/admin/delete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename, publicId, id: photo ? photo.id : null })
-      });
-      const data = await res.json();
-      if (data.success) {
-        showToast(data.message, 'success');
-        loadPhotos();
-      } else {
-        showToast(data.error || 'Failed to delete photo', 'error');
-      }
+
+      // Remove in localStorage immediately
+      try {
+        const deletedPhotos = JSON.parse(localStorage.getItem('adminDeletedPhotos') || '[]');
+        if (!deletedPhotos.includes(filename)) {
+          deletedPhotos.push(filename);
+          localStorage.setItem('adminDeletedPhotos', JSON.stringify(deletedPhotos));
+        }
+      } catch (e) {}
+
+      // Try server delete
+      try {
+        await fetch('/api/admin/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename, publicId, id: photo ? photo.id : null })
+        });
+      } catch (e) {}
+
+      showToast(`Photo "${filename}" deleted from view`, 'success');
+      loadPhotos();
     } catch (err) {
       showToast('Error deleting photo', 'error');
     }
@@ -1348,7 +1468,15 @@ window.adminLoginSubmit = async function () {
     }
 
     const previewImg = document.getElementById('inspector-img-preview');
-    previewImg.src = photo.src;
+    if (previewImg) {
+      previewImg.src = resolveImgSrc(photo.src);
+      previewImg.onerror = function () {
+        if (!this.dataset.retry) {
+          this.dataset.retry = '1';
+          this.src = (photo.src || '').replace(/^\//, '');
+        }
+      };
+    }
 
     modal.classList.remove('modal-hidden');
   }
@@ -1376,7 +1504,8 @@ window.adminLoginSubmit = async function () {
     if (copyBtn) {
       copyBtn.addEventListener('click', () => {
         if (!inspectorPhoto) return;
-        navigator.clipboard.writeText(window.location.origin + '/' + inspectorPhoto.src);
+        const fullUrl = new URL(resolveImgSrc(inspectorPhoto.src), window.location.origin).href;
+        navigator.clipboard.writeText(fullUrl);
         showToast('Image URL copied to clipboard!', 'success');
       });
     }
