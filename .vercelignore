@@ -1,0 +1,6 @@
+.env.local
+images.zip
+drive-download-*
+scratch*
+node_modules
+.git

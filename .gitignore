@@ -3,3 +3,4 @@ images.zip
 node_modules/
 
 .vercel
+.env*
