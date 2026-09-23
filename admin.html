@@ -40,8 +40,64 @@
 </head>
 <body class="bg-[#f8fafc] text-[#0f172a] font-sans antialiased min-h-screen flex overflow-x-hidden">
 
+  <!-- =========================================================================
+       LOGIN GATE — Shown before admin panel loads
+       ========================================================================= -->
+  <div id="admin-login-gate" style="position:fixed;inset:0;z-index:9999;background:#0d1527;display:flex;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans',sans-serif;">
+    <div style="width:100%;max-width:420px;padding:24px;">
+      <!-- Logo -->
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="width:56px;height:56px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/></svg>
+        </div>
+        <h1 style="color:white;font-size:22px;font-weight:700;margin:0 0 4px;">Life in Clicks</h1>
+        <p style="color:rgba(255,255,255,0.45);font-size:13px;margin:0;">Admin Panel — Secure Access</p>
+      </div>
+
+      <!-- Card -->
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:32px;">
+        <div id="login-error" style="display:none;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:20px;text-align:center;"></div>
+
+        <!-- Email -->
+        <div style="margin-bottom:16px;">
+          <label style="display:block;color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;margin-bottom:8px;letter-spacing:0.05em;text-transform:uppercase;">Email Address</label>
+          <input id="login-email" type="email" placeholder="admin@lifeinclicks.ca" autocomplete="email"
+            style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:white;font-size:14px;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='rgba(37,99,235,0.7)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+        </div>
+
+        <!-- Password -->
+        <div style="margin-bottom:24px;">
+          <label style="display:block;color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;margin-bottom:8px;letter-spacing:0.05em;text-transform:uppercase;">Password</label>
+          <div style="position:relative;">
+            <input id="login-password" type="password" placeholder="••••••••••" autocomplete="current-password"
+              style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:white;font-size:14px;padding:12px 42px 12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;"
+              onfocus="this.style.borderColor='rgba(37,99,235,0.7)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'"
+              onkeydown="if(event.key==='Enter')document.getElementById('login-btn').click()">
+            <button onclick="var p=document.getElementById('login-password');p.type=p.type==='password'?'text':'password';"
+              style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);padding:4px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Button -->
+        <button id="login-btn" onclick="adminLoginSubmit()"
+          style="width:100%;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;font-size:14px;font-weight:700;padding:13px;border:none;border-radius:10px;cursor:pointer;transition:opacity 0.2s;letter-spacing:0.02em;"
+          onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+          Sign In to Admin Panel
+        </button>
+      </div>
+
+      <p style="text-align:center;color:rgba(255,255,255,0.2);font-size:11px;margin-top:20px;">
+        lifeinclicks.ca · Private Access
+      </p>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toast-container"></div>
+
 
   <!-- Mobile Sidebar Backdrop Overlay -->
   <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-40 hidden transition-opacity duration-300"></div>

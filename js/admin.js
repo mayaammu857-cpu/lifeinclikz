@@ -3,8 +3,63 @@
  * Full Multi-View Engine (OG Edition)
  */
 
+/* ==========================================================================
+   LOGIN GATE — Email + Password Authentication
+   ========================================================================== */
+window.adminLoginSubmit = async function () {
+  const emailEl    = document.getElementById('login-email');
+  const passwordEl = document.getElementById('login-password');
+  const errorEl    = document.getElementById('login-error');
+  const btn        = document.getElementById('login-btn');
+
+  const email    = emailEl ? emailEl.value.trim() : '';
+  const password = passwordEl ? passwordEl.value : '';
+
+  if (!email || !password) {
+    if (errorEl) { errorEl.style.display = 'block'; errorEl.textContent = 'Please enter your email and password.'; }
+    return;
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Signing in…'; }
+  if (errorEl) errorEl.style.display = 'none';
+
+  try {
+    const res  = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      sessionStorage.setItem('adminAuth', '1');
+      const gate = document.getElementById('admin-login-gate');
+      if (gate) {
+        gate.style.transition = 'opacity 0.4s';
+        gate.style.opacity    = '0';
+        setTimeout(() => gate.remove(), 400);
+      }
+    } else {
+      if (errorEl) { errorEl.style.display = 'block'; errorEl.textContent = data.error || 'Invalid email or password.'; }
+      if (btn) { btn.disabled = false; btn.textContent = 'Sign In to Admin Panel'; }
+    }
+  } catch (e) {
+    if (errorEl) { errorEl.style.display = 'block'; errorEl.textContent = 'Network error. Please try again.'; }
+    if (btn) { btn.disabled = false; btn.textContent = 'Sign In to Admin Panel'; }
+  }
+};
+
+// Check existing session on page load — remove gate immediately if already logged in
+(function checkSession() {
+  if (sessionStorage.getItem('adminAuth') === '1') {
+    const gate = document.getElementById('admin-login-gate');
+    if (gate) gate.remove();
+  }
+})();
+
 (function () {
   'use strict';
+
 
   // State
   let photos = [];
