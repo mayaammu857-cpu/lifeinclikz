@@ -1,3 +1,5 @@
 .env.local
 images.zip
 node_modules/
+
+.vercel
