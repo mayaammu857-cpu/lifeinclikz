@@ -2,8 +2,30 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
+// Load environment variables from .env.local if present
+const envLocalPath = path.join(__dirname, '.env.local');
+if (fs.existsSync(envLocalPath)) {
+  try {
+    const envLines = fs.readFileSync(envLocalPath, 'utf8').split('\n');
+    for (const line of envLines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) continue;
+      const eqIdx = trimmed.indexOf('=');
+      if (eqIdx !== -1) {
+        const key = trimmed.slice(0, eqIdx).trim();
+        const val = trimmed.slice(eqIdx + 1).trim();
+        if (!process.env[key]) process.env[key] = val;
+      }
+    }
+  } catch (e) {
+    console.warn('Could not read .env.local:', e.message);
+  }
+}
+
 const PORT = process.env.PORT || 4173;
-const ADMIN_PIN = process.env.ADMIN_PIN || '8899';
+const ADMIN_PIN = process.env.ADMIN_PIN;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=UTF-8',
@@ -124,10 +146,39 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'POST' && reqUrl === '/api/admin/verify-pin') {
     try {
       const body = await parseJsonBody(req);
+      if (!ADMIN_PIN) {
+        return sendJson(res, 500, { success: false, error: 'ADMIN_PIN not set in environment' });
+      }
       if (body.pin === ADMIN_PIN) {
         return sendJson(res, 200, { success: true, message: 'Authentication successful' });
       } else {
         return sendJson(res, 401, { success: false, error: 'Incorrect PIN passcode' });
+      }
+    } catch (err) {
+      return sendJson(res, 400, { success: false, error: err.message });
+    }
+  }
+
+  // 1b. Email & Password Login
+  if (req.method === 'POST' && reqUrl === '/api/admin/login') {
+    try {
+      const body = await parseJsonBody(req);
+      const { email, password } = body || {};
+
+      if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+        return sendJson(res, 500, {
+          success: false,
+          error: 'ADMIN_EMAIL or ADMIN_PASSWORD not set in environment variables'
+        });
+      }
+
+      if (
+        String(email).trim().toLowerCase() === ADMIN_EMAIL.trim().toLowerCase() &&
+        String(password) === String(ADMIN_PASSWORD)
+      ) {
+        return sendJson(res, 200, { success: true, message: 'Login successful' });
+      } else {
+        return sendJson(res, 401, { success: false, error: 'Incorrect email or password' });
       }
     } catch (err) {
       return sendJson(res, 400, { success: false, error: err.message });

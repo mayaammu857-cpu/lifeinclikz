@@ -8,12 +8,19 @@ module.exports = function handler(req, res) {
 
   const { email, password } = req.body || {};
 
-  const ADMIN_EMAIL    = process.env.ADMIN_EMAIL    || 'admin@lifeinclicks.ca';
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Lifecycle@2025!';
+  const ADMIN_EMAIL    = process.env.ADMIN_EMAIL;
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+
+  if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+    return res.status(500).json({
+      success: false,
+      error: 'Admin authentication is not configured on the server. Please set ADMIN_EMAIL and ADMIN_PASSWORD environment variables.'
+    });
+  }
 
   if (
-    String(email).trim().toLowerCase() === ADMIN_EMAIL.toLowerCase() &&
-    String(password) === ADMIN_PASSWORD
+    String(email).trim().toLowerCase() === ADMIN_EMAIL.trim().toLowerCase() &&
+    String(password) === String(ADMIN_PASSWORD)
   ) {
     return res.json({ success: true, message: 'Login successful' });
   }
