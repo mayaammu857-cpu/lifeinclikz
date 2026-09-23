@@ -47,6 +47,6 @@ module.exports = function handler(req, res) {
 
   return res.status(401).json({
     success: false,
-    error: 'Incorrect email or password. Use ranjith@lifeinclicks.ca with password Clicks@844 or PIN 8899'
+    error: 'Incorrect email or password.'
   });
 };

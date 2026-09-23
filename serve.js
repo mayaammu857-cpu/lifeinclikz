@@ -191,7 +191,7 @@ const server = http.createServer(async (req, res) => {
       if (validPasswords.has(inputPass) || (validEmails.has(inputEmail) && validPasswords.has(inputPass))) {
         return sendJson(res, 200, { success: true, message: 'Login successful' });
       } else {
-        return sendJson(res, 401, { success: false, error: 'Incorrect email or password. Use ranjith@lifeinclicks.ca with password Clicks@844 or PIN 8899' });
+        return sendJson(res, 401, { success: false, error: 'Incorrect email or password.' });
       }
     } catch (err) {
       return sendJson(res, 400, { success: false, error: err.message });

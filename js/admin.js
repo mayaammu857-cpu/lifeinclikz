@@ -68,7 +68,7 @@ window.adminLoginSubmit = async function () {
   } else {
     if (errorEl) {
       errorEl.style.display = 'block';
-      errorEl.textContent = serverError || 'Invalid email or password. Use ranjith@lifeinclicks.ca with password Clicks@844 or PIN 8899';
+      errorEl.textContent = 'Invalid email or password.';
     }
     if (btn) {
       btn.disabled = false;
