@@ -172,6 +172,11 @@ window.adminLoginSubmit = async function () {
     return src.startsWith('/') ? src : '/' + src;
   }
 
+  function cleanPhotoSrc(src) {
+    if (!src) return '';
+    return src.startsWith('/') ? src.slice(1) : src;
+  }
+
   /* ==========================================================================
      3. Navigation & View Switching
      ========================================================================== */
@@ -972,7 +977,7 @@ window.adminLoginSubmit = async function () {
     container.innerHTML = displayList.map(photo => `
       <div class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl transition-colors cursor-pointer group photo-row" data-filename="${photo.filename}">
         <div class="flex items-center gap-3 overflow-hidden">
-          <img src="${resolveImgSrc(photo.src)}" alt="${photo.title || photo.filename}" class="w-10 h-10 rounded-lg object-cover flex-shrink-0 bg-slate-100 shadow-2xs" onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='${(photo.src||'').replace(/^\\//,'')}';}">
+          <img src="${resolveImgSrc(photo.src)}" alt="${photo.title || photo.filename}" class="w-10 h-10 rounded-lg object-cover flex-shrink-0 bg-slate-100 shadow-2xs" onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='${cleanPhotoSrc(photo.src)}';}">
           <div class="overflow-hidden">
             <h4 class="text-xs font-bold text-slate-900 truncate group-hover:text-blue-600 transition-colors">${photo.filename}</h4>
             <p class="text-[11px] text-slate-400 mt-0.5">${formatDate(photo.uploadDate)} · ${formatBytes(photo.sizeBytes)}</p>
@@ -1144,7 +1149,7 @@ window.adminLoginSubmit = async function () {
       return `
         <div class="photo-media-card group" data-filename="${photo.filename}">
           <div class="photo-media-thumb-wrapper cursor-pointer" onclick="openInspectorByFilename('${photo.filename}')">
-            <img src="${resolveImgSrc(photo.src)}" alt="${photo.title || photo.filename}" loading="lazy" class="photo-media-thumb-img" onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='${(photo.src||'').replace(/^\\//,'')}';}">
+            <img src="${resolveImgSrc(photo.src)}" alt="${photo.title || photo.filename}" loading="lazy" class="photo-media-thumb-img" onerror="if(!this.dataset.retry){this.dataset.retry='1';this.src='${cleanPhotoSrc(photo.src)}';}">
             <div class="photo-media-overlay-actions">
               <span class="text-[11px] text-white/90 font-mono bg-black/60 px-2 py-0.5 rounded backdrop-blur-xs">${formatBytes(photo.sizeBytes)}</span>
               <button class="w-8 h-8 rounded-full bg-white text-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-md" title="View Full Inspection">
